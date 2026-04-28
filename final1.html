@@ -1,0 +1,5703 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EquiMind AI – AI That Thinks Fair</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --ink: #0b0f1a;
+      --paper: #f3f1ec;
+      --white: #ffffff;
+      --green: #1a6b4a;
+      --green2: #2eb872;
+      --green-bg: rgba(26, 107, 74, .1);
+      --blue: #2d5be3;
+      --blue-bg: rgba(45, 91, 227, .1);
+      --amber: #e8b84b;
+      --amber-bg: rgba(232, 184, 75, .12);
+      --red: #e74c3c;
+      --red-bg: rgba(231, 76, 60, .1);
+      --muted: #7a7e8a;
+      --border: rgba(11, 15, 26, .09);
+      --shadow: 0 4px 24px rgba(11, 15, 26, .09);
+      --shadow-lg: 0 16px 56px rgba(11, 15, 26, .14);
+      --sw: 260px;
+      --topbar: 58px;
+      --r: 14px;
+    }
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 15px
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--paper);
+      color: var(--ink);
+      overflow-x: hidden
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit
+    }
+
+    button {
+      font-family: 'DM Sans', sans-serif;
+      cursor: pointer
+    }
+
+    input,
+    select,
+    textarea {
+      font-family: 'DM Sans', sans-serif
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px
+    }
+
+    ::-webkit-scrollbar-track {
+      background: transparent
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: rgba(11, 15, 26, .15);
+      border-radius: 10px
+    }
+
+    /* ─── PAGES ─── */
+    .page {
+      display: none
+    }
+
+    .page.active {
+      display: block
+    }
+
+    /* ─────────────────────────────────────────────
+   LANDING PAGE
+───────────────────────────────────────────── */
+    #pg-landing {
+      background: var(--paper)
+    }
+
+    .l-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 800;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 1rem 3.5rem;
+      background: rgba(243, 241, 236, .92);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+      transition: box-shadow .3s
+    }
+
+    .l-nav.scrolled {
+      box-shadow: 0 4px 20px rgba(11, 15, 26, .08)
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.3rem;
+      letter-spacing: -.03em;
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      cursor: pointer
+    }
+
+    .nav-dot {
+      width: 9px;
+      height: 9px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: blink 2s infinite
+    }
+
+    @keyframes blink {
+
+      0%,
+      100% {
+        opacity: 1;
+        transform: scale(1)
+      }
+
+      50% {
+        opacity: .5;
+        transform: scale(1.4)
+      }
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      list-style: none
+    }
+
+    .nav-links a {
+      font-size: .85rem;
+      font-weight: 500;
+      color: var(--ink);
+      transition: color .2s;
+      position: relative
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 1.5px;
+      background: var(--green);
+      transition: width .3s
+    }
+
+    .nav-links a:hover {
+      color: var(--green)
+    }
+
+    .nav-links a:hover::after {
+      width: 100%
+    }
+
+    .btn-nav {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: .5rem 1.3rem;
+      border-radius: 100px;
+      font-size: .83rem;
+      font-weight: 600;
+      transition: all .25s
+    }
+
+    .btn-nav:hover {
+      background: var(--green);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(26, 107, 74, .3)
+    }
+
+    /* HERO */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: center;
+      padding: 7rem 3.5rem 4rem;
+      gap: 3rem;
+      position: relative;
+      overflow: hidden
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgba(11, 15, 26, .04) 1px, transparent 1px), linear-gradient(90deg, rgba(11, 15, 26, .04) 1px, transparent 1px);
+      background-size: 55px 55px
+    }
+
+    .hblob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(70px);
+      opacity: .15;
+      animation: drift 14s ease-in-out infinite
+    }
+
+    .hb1 {
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, #1a6b4a, transparent);
+      top: -80px;
+      right: -60px
+    }
+
+    .hb2 {
+      width: 360px;
+      height: 360px;
+      background: radial-gradient(circle, #2d5be3, transparent);
+      bottom: 50px;
+      left: -50px;
+      animation-delay: -5s
+    }
+
+    .hb3 {
+      width: 260px;
+      height: 260px;
+      background: radial-gradient(circle, #e8b84b, transparent);
+      top: 40%;
+      right: 35%;
+      animation-delay: -9s
+    }
+
+    @keyframes drift {
+
+      0%,
+      100% {
+        transform: translate(0, 0) scale(1)
+      }
+
+      33% {
+        transform: translate(22px, -30px) scale(1.06)
+      }
+
+      66% {
+        transform: translate(-15px, 22px) scale(.94)
+      }
+    }
+
+    .hero-l {
+      position: relative;
+      z-index: 2;
+      animation: slideUp .9s cubic-bezier(.4, 0, .2, 1) both
+    }
+
+    .hero-r {
+      position: relative;
+      z-index: 2;
+      animation: slideUp .9s cubic-bezier(.4, 0, .2, 1) .25s both
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(32px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      background: rgba(26, 107, 74, .1);
+      border: 1px solid rgba(26, 107, 74, .25);
+      color: var(--green);
+      font-size: .72rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      padding: .36rem 1rem;
+      border-radius: 100px;
+      margin-bottom: 1.6rem
+    }
+
+    .bdot {
+      width: 5px;
+      height: 5px;
+      background: var(--green);
+      border-radius: 50%;
+      animation: blink 1.5s infinite
+    }
+
+    h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.6rem, 4.2vw, 4.6rem);
+      font-weight: 800;
+      line-height: .96;
+      letter-spacing: -.04em;
+      margin-bottom: 1.3rem
+    }
+
+    .h1g {
+      color: var(--green);
+      font-style: italic;
+      display: block
+    }
+
+    .h1u {
+      position: relative;
+      display: inline-block
+    }
+
+    .h1u::after {
+      content: '';
+      position: absolute;
+      bottom: 3px;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: var(--amber);
+      opacity: .45;
+      z-index: -1;
+      border-radius: 2px
+    }
+
+    .hero-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      line-height: 1.72;
+      max-width: 420px;
+      margin-bottom: 2.2rem;
+      font-weight: 300
+    }
+
+    .hero-btns {
+      display: flex;
+      gap: .9rem;
+      flex-wrap: wrap
+    }
+
+    .btn-p {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: var(--ink);
+      color: var(--paper);
+      padding: .78rem 1.8rem;
+      border-radius: 100px;
+      font-weight: 600;
+      font-size: .87rem;
+      border: none;
+      cursor: pointer;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn-p::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      transform: translateX(-101%);
+      transition: transform .35s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .btn-p:hover::before {
+      transform: translateX(0)
+    }
+
+    .btn-p:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 26px rgba(26, 107, 74, .3)
+    }
+
+    .btn-p span,
+    .btn-p svg {
+      position: relative;
+      z-index: 1
+    }
+
+    .btn-g {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      background: transparent;
+      color: var(--ink);
+      padding: .78rem 1.5rem;
+      border-radius: 100px;
+      font-weight: 500;
+      font-size: .87rem;
+      border: 1.5px solid var(--border);
+      cursor: pointer;
+      transition: all .25s
+    }
+
+    .btn-g:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .hero-stats {
+      display: flex;
+      gap: 2.2rem;
+      margin-top: 2.6rem;
+      padding-top: 1.8rem;
+      border-top: 1px solid var(--border)
+    }
+
+    .hstat-n {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -.04em
+    }
+
+    .hstat-n sup {
+      font-size: .85rem;
+      color: var(--green)
+    }
+
+    .hstat-l {
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      margin-top: .15rem
+    }
+
+    /* MINI DASHBOARD PREVIEW */
+    .preview-card {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: var(--shadow-lg);
+      transform: perspective(900px) rotateY(-5deg) rotateX(2deg);
+      transition: transform .5s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .preview-card:hover {
+      transform: perspective(900px) rotateY(-2deg) rotateX(1deg) translateY(-6px)
+    }
+
+    .pc-bar {
+      background: var(--ink);
+      padding: .85rem 1.1rem;
+      display: flex;
+      align-items: center;
+      gap: .45rem
+    }
+
+    .pcd {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%
+    }
+
+    .pcd:nth-child(1) {
+      background: #ff5f57
+    }
+
+    .pcd:nth-child(2) {
+      background: #febc2e
+    }
+
+    .pcd:nth-child(3) {
+      background: #28c840
+    }
+
+    .pct {
+      color: rgba(255, 255, 255, .35);
+      font-size: .68rem;
+      margin-left: auto;
+      letter-spacing: .05em
+    }
+
+    .pc-body {
+      padding: .9rem;
+      background: #f6f4f0
+    }
+
+    .pc3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: .65rem;
+      margin-bottom: .8rem
+    }
+
+    .pcc {
+      background: white;
+      border-radius: 9px;
+      padding: .8rem;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden
+    }
+
+    .pcc::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2.5px
+    }
+
+    .pcc:nth-child(1)::before {
+      background: var(--green)
+    }
+
+    .pcc:nth-child(2)::before {
+      background: var(--blue)
+    }
+
+    .pcc:nth-child(3)::before {
+      background: var(--red)
+    }
+
+    .pcv {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.35rem;
+      font-weight: 800;
+      letter-spacing: -.03em
+    }
+
+    .pcl {
+      font-size: .58rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-top: .1rem
+    }
+
+    .pc-bars {
+      display: flex;
+      align-items: flex-end;
+      gap: .35rem;
+      height: 48px;
+      background: white;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      padding: .5rem .6rem;
+      margin-bottom: .65rem
+    }
+
+    .pb {
+      flex: 1;
+      border-radius: 3px 3px 0 0;
+      animation: barUp .8s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: bottom
+    }
+
+    @keyframes barUp {
+      from {
+        transform: scaleY(0)
+      }
+
+      to {
+        transform: scaleY(1)
+      }
+    }
+
+    .pb:nth-child(odd) {
+      background: var(--green)
+    }
+
+    .pb:nth-child(even) {
+      background: rgba(26, 107, 74, .3)
+    }
+
+    .pb:nth-child(1) {
+      height: 32px;
+      animation-delay: .5s
+    }
+
+    .pb:nth-child(2) {
+      height: 44px;
+      animation-delay: .6s
+    }
+
+    .pb:nth-child(3) {
+      height: 26px;
+      animation-delay: .7s
+    }
+
+    .pb:nth-child(4) {
+      height: 40px;
+      animation-delay: .8s
+    }
+
+    .pb:nth-child(5) {
+      height: 36px;
+      animation-delay: .9s
+    }
+
+    .pb:nth-child(6) {
+      height: 48px;
+      animation-delay: 1s
+    }
+
+    .pb:nth-child(7) {
+      height: 38px;
+      animation-delay: 1.1s
+    }
+
+    .pc2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .65rem
+    }
+
+    .pcg {
+      background: white;
+      border-radius: 9px;
+      padding: .8rem;
+      border: 1px solid var(--border)
+    }
+
+    .pgl {
+      font-size: .57rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-bottom: .4rem
+    }
+
+    .pgtr {
+      height: 5px;
+      background: rgba(11, 15, 26, .08);
+      border-radius: 100px;
+      overflow: hidden;
+      margin-bottom: .3rem
+    }
+
+    .pgf {
+      height: 100%;
+      border-radius: 100px;
+      animation: fillBar 2s cubic-bezier(.4, 0, .2, 1) 1s both;
+      transform-origin: left;
+      transform: scaleX(0)
+    }
+
+    @keyframes fillBar {
+      to {
+        transform: scaleX(1)
+      }
+    }
+
+    .pgf1 {
+      background: var(--green);
+      width: 92%
+    }
+
+    .pgf2 {
+      background: var(--red);
+      width: 12%
+    }
+
+    .pgv {
+      font-family: 'Syne', sans-serif;
+      font-size: .95rem;
+      font-weight: 700
+    }
+
+    /* TICKER */
+    .ticker-wrap {
+      background: var(--ink);
+      padding: .72rem 0;
+      overflow: hidden;
+      white-space: nowrap
+    }
+
+    .ticker {
+      display: inline-flex;
+      animation: tick 32s linear infinite
+    }
+
+    @keyframes tick {
+      from {
+        transform: translateX(0)
+      }
+
+      to {
+        transform: translateX(-50%)
+      }
+    }
+
+    .ti {
+      display: inline-flex;
+      align-items: center;
+      gap: .6rem;
+      color: rgba(255, 255, 255, .55);
+      font-size: .75rem;
+      letter-spacing: .06em;
+      padding: 0 2rem;
+      text-transform: uppercase
+    }
+
+    .ti b {
+      color: var(--amber)
+    }
+
+    /* LANDING SECTIONS */
+    .lsec {
+      padding: 5.5rem 3.5rem
+    }
+
+    .stag {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .7rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: .8rem
+    }
+
+    .stag::before {
+      content: '';
+      width: 20px;
+      height: 1.5px;
+      background: var(--green)
+    }
+
+    .stitle {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(1.8rem, 2.8vw, 2.8rem);
+      font-weight: 800;
+      letter-spacing: -.03em;
+      line-height: 1.08;
+      max-width: 540px;
+      margin-bottom: 1rem
+    }
+
+    .ssub {
+      font-size: .95rem;
+      color: var(--muted);
+      line-height: 1.7;
+      max-width: 440px;
+      font-weight: 300
+    }
+
+    /* INDUSTRIES */
+    .sec-ind {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .sec-ind .stag {
+      color: var(--amber)
+    }
+
+    .sec-ind .stag::before {
+      background: var(--amber)
+    }
+
+    .sec-ind .stitle {
+      color: var(--paper)
+    }
+
+    .sec-ind .ssub {
+      color: rgba(255, 255, 255, .45)
+    }
+
+    .ind-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.2rem;
+      margin-top: 2.8rem;
+      position: relative;
+      z-index: 1
+    }
+
+    .ind-card {
+      background: rgba(255, 255, 255, .05);
+      border: 1px solid rgba(255, 255, 255, .1);
+      border-radius: 16px;
+      padding: 1.7rem;
+      cursor: pointer;
+      transition: all .35s cubic-bezier(.4, 0, .2, 1);
+      position: relative;
+      overflow: hidden
+    }
+
+    .ind-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 16px;
+      opacity: 0;
+      transition: opacity .35s
+    }
+
+    .ind-card:nth-child(1)::after {
+      background: radial-gradient(circle at top left, rgba(26, 107, 74, .18), transparent 65%)
+    }
+
+    .ind-card:nth-child(2)::after {
+      background: radial-gradient(circle at top left, rgba(45, 91, 227, .18), transparent 65%)
+    }
+
+    .ind-card:nth-child(3)::after {
+      background: radial-gradient(circle at top left, rgba(232, 184, 75, .18), transparent 65%)
+    }
+
+    .ind-card:hover::after {
+      opacity: 1
+    }
+
+    .ind-card:hover {
+      transform: translateY(-6px);
+      border-color: rgba(255, 255, 255, .22)
+    }
+
+    .ind-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+      margin-bottom: 1.2rem
+    }
+
+    .ind-card:nth-child(1) .ind-icon {
+      background: rgba(26, 107, 74, .2)
+    }
+
+    .ind-card:nth-child(2) .ind-icon {
+      background: rgba(45, 91, 227, .2)
+    }
+
+    .ind-card:nth-child(3) .ind-icon {
+      background: rgba(232, 184, 75, .2)
+    }
+
+    .ind-name {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin-bottom: .45rem;
+      color: var(--paper)
+    }
+
+    .ind-desc {
+      font-size: .8rem;
+      color: rgba(255, 255, 255, .45);
+      line-height: 1.65;
+      margin-bottom: 1.1rem;
+      font-weight: 300
+    }
+
+    .ind-feats {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .38rem
+    }
+
+    .ind-feats li {
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: .76rem;
+      color: rgba(255, 255, 255, .65)
+    }
+
+    .ifd {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .ind-card:nth-child(1) .ifd {
+      background: var(--green)
+    }
+
+    .ind-card:nth-child(2) .ifd {
+      background: var(--blue)
+    }
+
+    .ind-card:nth-child(3) .ifd {
+      background: var(--amber)
+    }
+
+    /* FEATURES */
+    .feat-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      overflow: hidden;
+      margin-top: 2.8rem
+    }
+
+    .fc {
+      background: var(--white);
+      padding: 1.6rem;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .fc::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(26, 107, 74, .05), transparent);
+      opacity: 0;
+      transition: opacity .3s
+    }
+
+    .fc:hover::after {
+      opacity: 1
+    }
+
+    .fc:hover {
+      z-index: 2;
+      box-shadow: 0 8px 32px rgba(11, 15, 26, .1)
+    }
+
+    .fe {
+      font-size: 1.6rem;
+      margin-bottom: .8rem;
+      display: block
+    }
+
+    .ft {
+      font-family: 'Syne', sans-serif;
+      font-size: .92rem;
+      font-weight: 700;
+      margin-bottom: .4rem
+    }
+
+    .fd {
+      font-size: .78rem;
+      color: var(--muted);
+      line-height: 1.6
+    }
+
+    /* LANDING CTA */
+    .l-cta {
+      padding: 5rem 3.5rem;
+      text-align: center;
+      position: relative;
+      overflow: hidden
+    }
+
+    .ctablob {
+      position: absolute;
+      width: 450px;
+      height: 450px;
+      background: radial-gradient(circle, rgba(26, 107, 74, .1), transparent);
+      border-radius: 50%;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      animation: breath 7s ease-in-out infinite
+    }
+
+    @keyframes breath {
+
+      0%,
+      100% {
+        transform: translate(-50%, -50%) scale(1)
+      }
+
+      50% {
+        transform: translate(-50%, -50%) scale(1.2)
+      }
+    }
+
+    .l-cta .stag {
+      justify-content: center
+    }
+
+    .l-cta .stitle {
+      margin: 0 auto 1rem;
+      text-align: center
+    }
+
+    .l-cta .ssub {
+      margin: 0 auto 2rem;
+      text-align: center
+    }
+
+    .cta-btns {
+      display: flex;
+      gap: .9rem;
+      justify-content: center;
+      flex-wrap: wrap
+    }
+
+    /* FOOTER */
+    footer {
+      background: var(--ink);
+      color: rgba(243, 241, 236, .5);
+      padding: 2.2rem 3.5rem
+    }
+
+    .fi {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem
+    }
+
+    .fl {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--paper)
+    }
+
+    .fsl {
+      font-size: .76rem;
+      color: rgba(255, 255, 255, .3);
+      margin-top: .15rem
+    }
+
+    .flinks {
+      display: flex;
+      gap: 1.8rem;
+      list-style: none
+    }
+
+    .flinks a {
+      color: rgba(255, 255, 255, .45);
+      font-size: .79rem;
+      transition: color .2s
+    }
+
+    .flinks a:hover {
+      color: var(--paper)
+    }
+
+    .fc2 {
+      font-size: .74rem;
+      color: rgba(255, 255, 255, .25)
+    }
+
+    /* ─────────────────────────────────────────────
+   LOGIN MODAL
+───────────────────────────────────────────── */
+    .modal-ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(11, 15, 26, .72);
+      backdrop-filter: blur(12px);
+      z-index: 9000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+
+    .modal-ov.open {
+      opacity: 1;
+      pointer-events: all
+    }
+
+    .modal {
+      background: var(--white);
+      border-radius: 20px;
+      padding: 2.2rem;
+      width: 100%;
+      max-width: 400px;
+      position: relative;
+      transform: scale(.92) translateY(20px);
+      transition: all .4s cubic-bezier(.4, 0, .2, 1);
+      box-shadow: var(--shadow-lg)
+    }
+
+    .modal-ov.open .modal {
+      transform: scale(1) translateY(0)
+    }
+
+    .mclose {
+      position: absolute;
+      top: .9rem;
+      right: .9rem;
+      background: rgba(11, 15, 26, .06);
+      border: none;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .85rem;
+      color: var(--ink);
+      transition: background .2s
+    }
+
+    .mclose:hover {
+      background: rgba(11, 15, 26, .12)
+    }
+
+    .mlogo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: .4rem;
+      margin-bottom: .25rem
+    }
+
+    .msub {
+      font-size: .8rem;
+      color: var(--muted);
+      margin-bottom: 1.7rem
+    }
+
+    .fg {
+      margin-bottom: .85rem
+    }
+
+    .fg label {
+      display: block;
+      font-size: .75rem;
+      font-weight: 600;
+      margin-bottom: .32rem;
+      letter-spacing: .02em
+    }
+
+    .fg input,
+    .fg select {
+      width: 100%;
+      padding: .65rem .9rem;
+      border: 1.5px solid var(--border);
+      border-radius: 9px;
+      font-size: .85rem;
+      background: var(--paper);
+      outline: none;
+      transition: border-color .2s;
+     input, button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+    .fg input:focus,
+    .fg select:focus {
+      border-color: var(--green)
+    }
+
+    .fg2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .85rem
+    }
+
+    .btn-login {
+      width: 100%;
+      padding: .78rem;
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      border-radius: 9px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      cursor: pointer;
+      margin-top: .3rem;
+      transition: all .3s;
+      position: relative;
+      overflow: hidden
+    }
+
+    .btn-login::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: var(--green);
+      transform: translateY(101%);
+      transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .btn-login:hover::before {
+      transform: translateY(0)
+    }
+
+    .btn-login span {
+      position: relative;
+      z-index: 1
+    }
+
+    /* ─────────────────────────────────────────────
+   DASHBOARD SHELL
+───────────────────────────────────────────── */
+    #pg-dashboard {
+      display: none;
+      min-height: 100vh;
+      flex-direction: row
+    }
+
+    #pg-dashboard.active {
+      display: flex
+    }
+
+    /* SIDEBAR */
+    .sidebar {
+      width: var(--sw);
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      z-index: 600;
+      overflow-y: auto
+    }
+
+    .sb-logo {
+      padding: 1.3rem 1.3rem .9rem;
+      border-bottom: 1px solid rgba(255, 255, 255, .07);
+      display: flex;
+      align-items: center;
+      gap: .45rem
+    }
+
+    .sb-logo-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      color: var(--paper);
+      letter-spacing: -.02em
+    }
+
+    .sb-nav {
+      flex: 1;
+      padding: .7rem 0
+    }
+
+    .sb-sec {
+      padding: .55rem 1.2rem .25rem;
+      font-size: .62rem;
+      font-weight: 700;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, .22)
+    }
+
+    .sb-item {
+      display: flex;
+      align-items: center;
+      gap: .7rem;
+      padding: .6rem 1.1rem;
+      margin: .08rem .55rem;
+      border-radius: 9px;
+      cursor: pointer;
+      transition: all .22s;
+      color: rgba(255, 255, 255, .5);
+      font-size: .83rem;
+      font-weight: 500;
+      border: none;
+      background: none;
+      width: calc(100% - 1.1rem);
+      text-align: left
+    }
+
+    .sb-item:hover {
+      background: rgba(255, 255, 255, .09);
+      color: var(--paper)
+    }
+
+    .sb-item.act {
+      background: var(--green) !important;
+      color: white
+    }
+
+    .sb-icon {
+      font-size: 1rem;
+      width: 18px;
+      text-align: center;
+      flex-shrink: 0
+    }
+
+    .sb-badge {
+      margin-left: auto;
+      background: var(--red);
+      color: white;
+      font-size: .62rem;
+      padding: .12rem .42rem;
+      border-radius: 100px;
+      font-weight: 700
+    }
+
+    .sb-foot {
+      padding: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, .07)
+    }
+
+    .sb-org {
+      display: flex;
+      align-items: center;
+      gap: .65rem;
+      padding: .65rem .85rem;
+      background: rgba(255, 255, 255, .07);
+      border-radius: 9px;
+      margin-bottom: .5rem
+    }
+
+    .sb-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--green);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      color: white;
+      font-size: .82rem;
+      font-family: 'Syne', sans-serif;
+      flex-shrink: 0
+    }
+
+    .sb-uname {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--paper)
+    }
+
+    .sb-urole {
+      font-size: .67rem;
+      color: rgba(255, 255, 255, .38)
+    }
+
+    .sb-logout {
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      padding: .5rem .85rem;
+      border-radius: 8px;
+      color: rgba(255, 255, 255, .35);
+      font-size: .78rem;
+      cursor: pointer;
+      transition: all .2s;
+      background: none;
+      border: none;
+      width: 100%
+    }
+
+    .sb-logout:hover {
+      background: rgba(231, 76, 60, .15);
+      color: #e74c3c
+    }
+
+    /* MAIN */
+    .main {
+      margin-left: var(--sw);
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh
+    }
+
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: .8rem 1.8rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 500;
+      height: var(--topbar)
+    }
+
+    .tb-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -.02em
+    }
+
+    .tb-r {
+      display: flex;
+      align-items: center;
+      gap: .9rem
+    }
+
+    .tb-search {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: .4rem .85rem;
+      font-size: .79rem;
+      color: var(--muted);
+      cursor: text;
+      min-width: 160px
+    }
+
+    .tb-notif {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: .95rem;
+      position: relative
+    }
+
+    .nb {
+      position: absolute;
+      top: 3px;
+      right: 3px;
+      width: 7px;
+      height: 7px;
+      background: var(--red);
+      border-radius: 50%;
+      border: 1.5px solid white
+    }
+
+    .tb-org {
+      font-size: .8rem;
+      font-weight: 600;
+      color: var(--muted)
+    }
+
+    .content {
+      padding: 1.6rem 1.8rem;
+      flex: 1;
+      background: #f0ede7
+    }
+
+    /* PANELS */
+    .panel {
+      display: none;
+      animation: pIn .35s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .panel.act {
+      display: block
+    }
+
+    @keyframes pIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    /* ── SHARED COMPONENTS ── */
+    .pg-head {
+      margin-bottom: 1.4rem
+    }
+
+    .pg-tag {
+      font-size: .69rem;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-transform: uppercase;
+      color: var(--green);
+      margin-bottom: .35rem
+    }
+
+    .pg-title {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: -.03em
+    }
+
+    /* KPI ROW */
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 1.5rem
+    }
+
+    .kpi {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 1.2rem 1.4rem;
+      border: 1px solid var(--border);
+      position: relative;
+      overflow: hidden;
+      transition: all .3s
+    }
+
+    .kpi:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow)
+    }
+
+    .kpi::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px
+    }
+
+    .kpi:nth-child(1)::before {
+      background: var(--green)
+    }
+
+    .kpi:nth-child(2)::before {
+      background: var(--blue)
+    }
+
+    .kpi:nth-child(3)::before {
+      background: var(--amber)
+    }
+
+    .kpi:nth-child(4)::before {
+      background: var(--red)
+    }
+
+    .kpi-ic {
+      font-size: 1.2rem;
+      margin-bottom: .5rem
+    }
+
+    .kpi-v {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -.04em
+    }
+
+    .kpi-l {
+      font-size: .7rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .05em;
+      margin-top: .18rem
+    }
+
+    .kpi-tr {
+      position: absolute;
+      top: .9rem;
+      right: .9rem;
+      font-size: .68rem;
+      font-weight: 700;
+      padding: .18rem .5rem;
+      border-radius: 100px
+    }
+
+    .up {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .dn {
+      background: var(--red-bg);
+      color: var(--red)
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--white);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      overflow: hidden
+    }
+
+    .card-h {
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border)
+    }
+
+    .card-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .9rem
+    }
+
+    .card-sub {
+      font-size: .7rem;
+      color: var(--muted);
+      margin-top: .1rem
+    }
+
+    .card-body {
+      padding: 1.3rem
+    }
+
+    /* GRID LAYOUTS */
+    .g2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem
+    }
+
+    .g3 {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 1.2rem
+    }
+
+    .g32 {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 1.2rem
+    }
+
+    .gcol {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem
+    }
+
+    /* UPLOAD ZONE */
+    .upload-z {
+      background: var(--white);
+      border: 2px dashed var(--border);
+      border-radius: var(--r);
+      padding: 2rem 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all .3s;
+      position: relative
+    }
+
+    .upload-z:hover {
+      border-color: var(--green);
+      background: rgba(26, 107, 74, .02)
+    }
+
+    .upload-z input[type=file] {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+      width: 100%;
+      height: 100%
+    }
+
+    .uz-ic {
+      font-size: 2.2rem;
+      margin-bottom: .7rem
+    }
+
+    .uz-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: .35rem
+    }
+
+    .uz-s {
+      font-size: .78rem;
+      color: var(--muted);
+      margin-bottom: .8rem
+    }
+
+    .uz-fn {
+      font-size: .78rem;
+      color: var(--green);
+      font-weight: 600;
+      margin-top: .5rem;
+      display: none
+    }
+
+    /* TABS */
+    .tabs {
+      display: flex;
+      gap: .3rem;
+      background: var(--paper);
+      border-radius: 9px;
+      padding: .28rem;
+      margin-bottom: 1.1rem
+    }
+
+    .tab {
+      flex: 1;
+      padding: .48rem;
+      border: none;
+      background: none;
+      border-radius: 7px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all .22s;
+      color: var(--muted)
+    }
+
+    .tab.act {
+      background: var(--white);
+      color: var(--ink);
+      box-shadow: 0 1px 4px rgba(11, 15, 26, .08)
+    }
+
+    /* FORM FIELDS */
+    .frow {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: .8rem;
+      margin-bottom: .8rem
+    }
+
+    .fi {
+      display: flex;
+      flex-direction: column;
+      gap: .28rem
+    }
+
+    .fi label {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .02em
+    }
+
+    .fi input,
+    .fi select,
+    .fi textarea {
+      padding: .6rem .85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .83rem;
+      background: var(--paper);
+      outline: none;
+      transition: border-color .2s;
+     input, button {
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+    .fi input:focus,
+    .fi select:focus,
+    .fi textarea:focus {
+      border-color: var(--green)
+    }
+
+    .fi textarea {
+      resize: vertical;
+      min-height: 80px
+    }
+
+    .fi-full {
+      display: flex;
+      flex-direction: column;
+      gap: .28rem;
+      margin-bottom: .8rem
+    }
+
+    .fi-full label {
+      font-size: .72rem;
+      font-weight: 600
+    }
+
+    .fi-full input,
+    .fi-full select,
+    .fi-full textarea {
+      padding: .6rem .85rem;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      font-size: .83rem;
+      background: var(--paper);
+      outline: none;
+      transition: border-color .2s
+    }
+
+    .fi-full input:focus,
+    .fi-full textarea:focus {
+      border-color: var(--green)
+    }
+
+    .fi-full textarea {
+      resize: vertical;
+      min-height: 72px;
+      font-family: 'DM Sans', sans-serif
+    }
+
+    /* BUTTONS */
+    .btn-run {
+      width: 100%;
+      padding: .75rem;
+      border: none;
+      border-radius: 9px;
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .89rem;
+      cursor: pointer;
+      transition: all .3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: .5rem
+    }
+
+    .btn-green {
+      background: var(--green);
+      color: white
+    }
+
+    .btn-green:hover {
+      background: #15573c;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(26, 107, 74, .3)
+    }
+
+    .btn-blue {
+      background: var(--blue);
+      color: white
+    }
+
+    .btn-blue:hover {
+      background: #2348c0;
+      transform: translateY(-1px)
+    }
+
+    .btn-amber {
+      background: var(--amber);
+      color: var(--ink)
+    }
+
+    .btn-amber:hover {
+      background: #d4a63e;
+      transform: translateY(-1px)
+    }
+
+    .btn-ink {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .btn-ink:hover {
+      background: var(--green)
+    }
+
+    .btn-outline {
+      background: transparent;
+      color: var(--ink);
+      border: 1.5px solid var(--border)
+    }
+
+    .btn-outline:hover {
+      border-color: var(--ink);
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .btn-sm {
+      padding: .32rem .85rem;
+      background: var(--paper);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      font-size: .74rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--ink);
+      transition: all .2s
+    }
+
+    .btn-sm:hover {
+      background: var(--ink);
+      color: var(--paper)
+    }
+
+    .btn-sm-g {
+      padding: .32rem .85rem;
+      background: var(--green-bg);
+      border: 1px solid rgba(26, 107, 74, .25);
+      border-radius: 7px;
+      font-size: .74rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--green);
+      transition: all .2s
+    }
+
+    .btn-sm-g:hover {
+      background: var(--green);
+      color: white
+    }
+
+    /* TABLE */
+    .tbl-wrap {
+      overflow-x: auto
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse
+    }
+
+    th {
+      font-size: .69rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      padding: .65rem 1.2rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+      background: rgba(11, 15, 26, .02);
+      white-space: nowrap
+    }
+
+    td {
+      padding: .82rem 1.2rem;
+      font-size: .81rem;
+      border-bottom: 1px solid rgba(11, 15, 26, .04);
+      transition: background .18s
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: rgba(11, 15, 26, .02)
+    }
+
+    .pill {
+      padding: .22rem .7rem;
+      border-radius: 100px;
+      font-size: .7rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: .32rem;
+      white-space: nowrap
+    }
+
+    .pill-green {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .pill-red {
+      background: var(--red-bg);
+      color: var(--red)
+    }
+
+    .pill-amber {
+      background: var(--amber-bg);
+      color: #8a6000
+    }
+
+    .pill-blue {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .pill-gray {
+      background: rgba(11, 15, 26, .06);
+      color: var(--muted)
+    }
+
+    /* RESULT CARDS */
+    .result-box {
+      border-radius: var(--r);
+      padding: 1.3rem;
+      border: 1px solid var(--border);
+      margin-bottom: 1rem;
+      display: none;
+      animation: pIn .4s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .result-box.show {
+      display: block
+    }
+
+    .result-box.approved {
+      border-top: 4px solid var(--green)
+    }
+
+    .result-box.rejected {
+      border-top: 4px solid var(--red)
+    }
+
+    .result-box.flagged {
+      border-top: 4px solid var(--amber)
+    }
+
+    .res-head {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      margin-bottom: 1rem
+    }
+
+    .res-ic {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+      flex-shrink: 0
+    }
+
+    .res-ic-ok {
+      background: var(--green-bg)
+    }
+
+    .res-ic-no {
+      background: var(--red-bg)
+    }
+
+    .res-ic-flag {
+      background: var(--amber-bg)
+    }
+
+    .res-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.05rem
+    }
+
+    .res-sub {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .12rem
+    }
+
+    .conf-bar {
+      margin: 1rem 0
+    }
+
+    .conf-hd {
+      display: flex;
+      justify-content: space-between;
+      font-size: .74rem;
+      margin-bottom: .35rem
+    }
+
+    .conf-lbl {
+      color: var(--muted)
+    }
+
+    .conf-val {
+      font-weight: 700;
+      color: var(--green)
+    }
+
+    .conf-tr {
+      height: 6px;
+      background: rgba(11, 15, 26, .07);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .conf-fi {
+      height: 100%;
+      border-radius: 100px;
+      animation: fillBar 1.4s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: left
+    }
+
+    .conf-green {
+      background: linear-gradient(90deg, var(--green), var(--green2))
+    }
+
+    .conf-red {
+      background: linear-gradient(90deg, var(--red), #e67e22)
+    }
+
+    .reason-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      margin-top: .8rem
+    }
+
+    .reason-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: .55rem;
+      font-size: .8rem;
+      line-height: 1.55
+    }
+
+    .ri {
+      width: 17px;
+      height: 17px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .6rem;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: .1rem
+    }
+
+    .ri-ok {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .ri-no {
+      background: var(--red-bg);
+      color: var(--red)
+    }
+
+    .ri-warn {
+      background: var(--amber-bg);
+      color: #8a6000
+    }
+
+    .improve-box {
+      background: var(--amber-bg);
+      border: 1px solid rgba(232, 184, 75, .35);
+      border-radius: 9px;
+      padding: .85rem 1rem;
+      margin-top: .85rem;
+      font-size: .78rem;
+      color: #7a5500
+    }
+
+    .next-steps {
+      background: var(--green-bg);
+      border: 1px solid rgba(26, 107, 74, .2);
+      border-radius: 9px;
+      padding: .85rem 1rem;
+      margin-top: .85rem;
+      font-size: .78rem;
+      color: #1a4a32
+    }
+
+    .wa-notif {
+      border-radius: 9px;
+      padding: .72rem 1rem;
+      margin-top: .8rem;
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: .78rem
+    }
+
+    .wa-ok {
+      background: rgba(37, 211, 102, .1);
+      border: 1px solid rgba(37, 211, 102, .25);
+      color: #1a7a40
+    }
+
+    .wa-no {
+      background: rgba(231, 76, 60, .08);
+      border: 1px solid rgba(231, 76, 60, .2);
+      color: #c0392b
+    }
+
+    .wa-btn {
+      border: none;
+      border-radius: 9px;
+      padding: .72rem 1rem;
+      margin-top: .8rem;
+      display: flex;
+      align-items: center;
+      gap: .55rem;
+      font-size: .78rem;
+      cursor: pointer;
+      transition: all .2s
+    }
+
+    .wa-green {
+      background: rgba(37, 211, 102, .1);
+      border: 1px solid rgba(37, 211, 102, .25);
+      color: #1a7a40
+    }
+
+    .wa-green:hover {
+      background: rgba(37, 211, 102, .2)
+    }
+
+    .wa-red {
+      background: rgba(231, 76, 60, .08);
+      border: 1px solid rgba(231, 76, 60, .2);
+      color: #c0392b
+    }
+
+    .wa-red:hover {
+      background: rgba(231, 76, 60, .15)
+    }
+
+    .wa-amber {
+      background: var(--amber-bg);
+      border: 1px solid rgba(232, 184, 75, .4);
+      color: #7a5500
+    }
+
+    .wa-amber:hover {
+      background: rgba(232, 184, 75, .15)
+    }
+
+    .flag-box {
+      background: var(--amber-bg);
+      border: 1px solid rgba(232, 184, 75, .4);
+      border-radius: 9px;
+      padding: .85rem 1rem;
+      margin-top: .85rem;
+      font-size: .78rem;
+      color: #7a5500
+    }
+
+    .autosolve-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .45rem;
+      margin-top: .6rem;
+      background: var(--amber);
+      color: var(--ink);
+      border: none;
+      border-radius: 7px;
+      padding: .45rem 1rem;
+      font-size: .77rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all .25s
+    }
+
+    .autosolve-btn:hover {
+      background: #d4a63e
+    }
+
+    .solved-msg {
+      background: var(--green-bg);
+      border: 1px solid rgba(26, 107, 74, .2);
+      border-radius: 8px;
+      padding: .65rem 1rem;
+      margin-top: .6rem;
+      font-size: .78rem;
+      color: var(--green);
+      display: none;
+      animation: pIn .3s both
+    }
+
+    /* CLIENT REQUEST PANEL */
+    .req-table-wrap {
+      background: var(--white);
+      border-radius: var(--r);
+      border: 1px solid var(--border);
+      overflow: hidden
+    }
+
+    .req-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+      padding: .2rem .6rem;
+      border-radius: 100px;
+      font-size: .68rem;
+      font-weight: 700
+    }
+
+    .req-new {
+      background: var(--blue-bg);
+      color: var(--blue)
+    }
+
+    .req-analyzed {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .req-pending {
+      background: var(--amber-bg);
+      color: #8a6000
+    }
+
+    /* USER NOTIFICATION PAGE */
+    .user-notif-banner {
+      border-radius: var(--r);
+      padding: 1.3rem 1.5rem;
+      margin-bottom: 1rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem
+    }
+
+    .unb-approved {
+      background: linear-gradient(135deg, rgba(26, 107, 74, .08), rgba(46, 184, 114, .05));
+      border: 1.5px solid rgba(26, 107, 74, .2)
+    }
+
+    .unb-rejected {
+      background: linear-gradient(135deg, rgba(231, 76, 60, .07), transparent);
+      border: 1.5px solid rgba(231, 76, 60, .18)
+    }
+
+    .unb-ic {
+      font-size: 1.8rem;
+      flex-shrink: 0
+    }
+
+    .unb-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: .25rem
+    }
+
+    .unb-approved .unb-title {
+      color: var(--green)
+    }
+
+    .unb-rejected .unb-title {
+      color: var(--red)
+    }
+
+    .unb-body {
+      font-size: .84rem;
+      color: var(--ink);
+      line-height: 1.65
+    }
+
+    .unb-reasons {
+      margin-top: .8rem;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: .38rem
+    }
+
+    .unb-reasons li {
+      display: flex;
+      align-items: flex-start;
+      gap: .5rem;
+      font-size: .8rem
+    }
+
+    /* CHATBOT */
+    .chat-box {
+      background: var(--white);
+      border: 1px solid var(--border);
+      border-radius: var(--r);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 380px
+    }
+
+    .chat-hd {
+      padding: .9rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: .55rem
+    }
+
+    .chat-av {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: .95rem;
+      flex-shrink: 0
+    }
+
+    .chat-nm {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .86rem
+    }
+
+    .chat-st {
+      font-size: .67rem;
+      display: flex;
+      align-items: center;
+      gap: .28rem
+    }
+
+    .chat-st::before {
+      content: '';
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    .chat-green .chat-st::before {
+      background: var(--green);
+      color: var(--green)
+    }
+
+    .chat-blue .chat-av {
+      background: var(--blue-bg)
+    }
+
+    .chat-blue .chat-st {
+      color: var(--blue)
+    }
+
+    .chat-blue .chat-st::before {
+      background: var(--blue)
+    }
+
+    .chat-health .chat-av {
+      background: var(--amber-bg)
+    }
+
+    .chat-health .chat-st {
+      color: #8a6000
+    }
+
+    .chat-health .chat-st::before {
+      background: var(--amber)
+    }
+
+    .chat-msgs {
+      flex: 1;
+      overflow-y: auto;
+      padding: .9rem;
+      display: flex;
+      flex-direction: column;
+      gap: .7rem
+    }
+
+    .msg {
+      max-width: 78%;
+      padding: .65rem .95rem;
+      border-radius: 12px;
+      font-size: .8rem;
+      line-height: 1.55;
+      animation: pIn .3s cubic-bezier(.4, 0, .2, 1)
+    }
+
+    .msg.bot {
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 4px 12px 12px 12px;
+      align-self: flex-start
+    }
+
+    .msg.user {
+      background: var(--ink);
+      color: var(--paper);
+      border-radius: 12px 4px 12px 12px;
+      align-self: flex-end
+    }
+
+    .chat-inp-row {
+      display: flex;
+      gap: .55rem;
+      padding: .85rem;
+      border-top: 1px solid var(--border)
+    }
+
+    .chat-inp {
+      flex: 1;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: .55rem .85rem;
+      font-size: .81rem;
+      font-family: 'DM Sans', sans-serif;
+      outline: none;
+      background: var(--paper);
+      transition: border-color .2s
+    }
+
+    .chat-inp:focus {
+      border-color: var(--green)
+    }
+
+    .chat-send {
+      background: var(--green);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: .55rem .9rem;
+      cursor: pointer;
+      font-size: .85rem;
+      transition: all .22s
+    }
+
+    .chat-send:hover {
+      background: #15573c
+    }
+
+    /* FAIRNESS / BIAS */
+    .bias-panel {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.3rem
+    }
+
+    .bias-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 1.3rem;
+      border: 1px solid var(--border)
+    }
+
+    .bias-title {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      margin-bottom: 1rem
+    }
+
+    .bias-b {
+      color: var(--red)
+    }
+
+    .bias-a {
+      color: var(--green)
+    }
+
+    .bbr {
+      margin-bottom: .85rem
+    }
+
+    .bbr-hd {
+      display: flex;
+      justify-content: space-between;
+      font-size: .74rem;
+      margin-bottom: .28rem
+    }
+
+    .bbr-l {
+      color: var(--muted)
+    }
+
+    .bbr-v {
+      font-weight: 700
+    }
+
+    .bbr-tr {
+      height: 7px;
+      background: rgba(11, 15, 26, .07);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .bbr-f {
+      height: 100%;
+      border-radius: 100px;
+      animation: fillBar 1.6s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: left
+    }
+
+    .bf-red {
+      background: var(--red)
+    }
+
+    .bf-green {
+      background: linear-gradient(90deg, var(--green), var(--green2))
+    }
+
+    .bias-summary {
+      text-align: center;
+      padding: .8rem;
+      background: var(--green-bg);
+      border: 1px solid rgba(26, 107, 74, .18);
+      border-radius: 9px;
+      margin-top: 1rem
+    }
+
+    .bs-val {
+      font-family: 'Syne', sans-serif;
+      font-size: 2rem;
+      font-weight: 800;
+      color: var(--green)
+    }
+
+    .bs-lbl {
+      font-size: .75rem;
+      color: var(--muted);
+      margin-top: .1rem
+    }
+
+    .bias-alert {
+      background: var(--amber-bg);
+      border: 1px solid rgba(232, 184, 75, .35);
+      border-radius: 9px;
+      padding: .85rem 1rem;
+      margin-top: 1rem;
+      display: flex;
+      gap: .65rem;
+      font-size: .78rem;
+      color: #7a5500;
+      align-items: flex-start
+    }
+
+    /* GAUGE */
+    .gauge-row {
+      display: flex;
+      flex-direction: column;
+      gap: .8rem;
+      margin-top: .8rem
+    }
+
+    .gr {
+      display: flex;
+      flex-direction: column;
+      gap: .25rem
+    }
+
+    .gr-hd {
+      display: flex;
+      justify-content: space-between;
+      font-size: .75rem
+    }
+
+    .gr-l {
+      color: var(--muted);
+      font-weight: 500
+    }
+
+    .gr-v {
+      font-weight: 700;
+      color: var(--ink)
+    }
+
+    .gr-tr {
+      height: 5px;
+      background: rgba(11, 15, 26, .07);
+      border-radius: 100px;
+      overflow: hidden
+    }
+
+    .gr-f {
+      height: 100%;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+      border-radius: 100px;
+      animation: fillBar 1.8s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: left
+    }
+
+    /* HISTORY */
+    .hist-filter {
+      display: flex;
+      gap: .6rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap
+    }
+
+    .hf-btn {
+      padding: .38rem .9rem;
+      border: 1px solid var(--border);
+      border-radius: 100px;
+      font-size: .75rem;
+      font-weight: 600;
+      cursor: pointer;
+      background: var(--white);
+      color: var(--muted);
+      transition: all .2s
+    }
+
+    .hf-btn.act {
+      background: var(--ink);
+      color: var(--paper);
+      border-color: var(--ink)
+    }
+
+    /* NOTIFICATIONS (in-app) */
+    .notif-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 1rem 1.3rem;
+      border: 1px solid var(--border);
+      display: flex;
+      gap: .9rem;
+      align-items: flex-start;
+      margin-bottom: .8rem;
+      border-left: 4px solid
+    }
+
+    .nc-g {
+      border-left-color: var(--green)
+    }
+
+    .nc-r {
+      border-left-color: var(--red)
+    }
+
+    .nc-b {
+      border-left-color: var(--blue)
+    }
+
+    .nc-a {
+      border-left-color: var(--amber)
+    }
+
+    .nc-ic {
+      font-size: 1.2rem;
+      flex-shrink: 0
+    }
+
+    .nc-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .86rem;
+      margin-bottom: .18rem
+    }
+
+    .nc-s {
+      font-size: .76rem;
+      color: var(--muted)
+    }
+
+    .nc-time {
+      font-size: .68rem;
+      color: var(--muted);
+      margin-left: auto;
+      white-space: nowrap
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      top: 1.3rem;
+      right: 1.3rem;
+      z-index: 99999;
+      padding: .85rem 1.2rem;
+      border-radius: 12px;
+      font-size: .82rem;
+      transform: translateX(130%);
+      transition: transform .4s cubic-bezier(.4, 0, .2, 1);
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      box-shadow: 0 10px 28px rgba(11, 15, 26, .28);
+      max-width: 310px;
+      background: var(--ink);
+      color: var(--paper);
+      border-left: 3px solid
+    }
+
+    .toast.show {
+      transform: translateX(0)
+    }
+
+    .toast.t-ok {
+      border-left-color: var(--green)
+    }
+
+    .toast.t-err {
+      border-left-color: var(--red)
+    }
+
+    .toast.t-info {
+      border-left-color: var(--blue)
+    }
+
+    .toast.t-warn {
+      border-left-color: var(--amber)
+    }
+
+    /* OVERVIEW CHARTS */
+    .bar-chart {
+      display: flex;
+      align-items: flex-end;
+      gap: .55rem;
+      height: 120px;
+      padding-top: .5rem
+    }
+
+    .bch {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: .38rem;
+      flex: 1
+    }
+
+    .bc-b {
+      width: 100%;
+      border-radius: 4px 4px 0 0;
+      animation: barUp .7s cubic-bezier(.4, 0, .2, 1) both;
+      transform-origin: bottom
+    }
+
+    .bc-l {
+      font-size: .62rem;
+      color: var(--muted)
+    }
+
+    .bc-v {
+      font-size: .65rem;
+      font-weight: 700;
+      color: var(--ink)
+    }
+
+    .donut-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: .8rem 0
+    }
+
+    .donut {
+      width: 110px;
+      height: 110px;
+      position: relative
+    }
+
+    .donut svg {
+      transform: rotate(-90deg)
+    }
+
+    .donut-txt {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center
+    }
+
+    .dv {
+      font-family: 'Syne', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 800
+    }
+
+    .dl {
+      font-size: .6rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .04em
+    }
+
+    .legend {
+      display: flex;
+      flex-direction: column;
+      gap: .45rem;
+      margin-top: .7rem
+    }
+
+    .leg {
+      display: flex;
+      align-items: center;
+      gap: .45rem;
+      font-size: .74rem
+    }
+
+    .leg-d {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0
+    }
+
+    /* Patient table */
+    .pt-sev {
+      padding: .18rem .6rem;
+      border-radius: 100px;
+      font-size: .68rem;
+      font-weight: 700
+    }
+
+    .pt-crit {
+      background: var(--red-bg);
+      color: var(--red)
+    }
+
+    .pt-risk {
+      background: var(--amber-bg);
+      color: #8a6000
+    }
+
+    .pt-norm {
+      background: var(--green-bg);
+      color: var(--green)
+    }
+
+    .pt-emer {
+      background: rgba(155, 0, 0, .1);
+      color: #900
+    }
+
+    /* HR Candidates */
+    .cand-card {
+      background: var(--white);
+      border-radius: var(--r);
+      padding: 1.1rem 1.3rem;
+      border: 1px solid var(--border);
+      margin-bottom: .8rem;
+      position: relative;
+      transition: all .3s
+    }
+
+    .cand-card:hover {
+      box-shadow: var(--shadow)
+    }
+
+    .cand-card.best {
+      border: 1.5px solid rgba(26, 107, 74, .35);
+      background: rgba(26, 107, 74, .03)
+    }
+
+    .cand-rank {
+      position: absolute;
+      top: .9rem;
+      right: .9rem
+    }
+
+    .cand-name {
+      font-family: 'Syne', sans-serif;
+      font-weight: 700;
+      font-size: .95rem;
+      margin-bottom: .25rem
+    }
+
+    .cand-meta {
+      font-size: .76rem;
+      color: var(--muted);
+      margin-bottom: .5rem
+    }
+
+    .cand-why {
+      font-size: .77rem;
+      line-height: 1.55
+    }
+
+    /* Report gen */
+    .report-banner {
+      background: linear-gradient(135deg, var(--ink), #1a2035);
+      border-radius: var(--r);
+      padding: 1.3rem 1.5rem;
+      color: var(--paper);
+      margin-top: 1.2rem
+    }
+
+    .rb-t {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1rem;
+      margin-bottom: .3rem
+    }
+
+    .rb-s {
+      font-size: .78rem;
+      color: rgba(255, 255, 255, .5);
+      margin-bottom: .9rem
+    }
+
+    .rb-btns {
+      display: flex;
+      gap: .7rem;
+      flex-wrap: wrap
+    }
+
+    .rb-btn {
+      padding: .5rem 1.1rem;
+      border: 1.5px solid rgba(255, 255, 255, .2);
+      border-radius: 8px;
+      font-size: .78rem;
+      font-weight: 600;
+      cursor: pointer;
+      color: var(--paper);
+      background: rgba(255, 255, 255, .08);
+      transition: all .25s
+    }
+
+    .rb-btn:hover {
+      background: rgba(255, 255, 255, .18)
+    }
+
+    /* Rules saved badge */
+    .rules-saved {
+      display: none;
+      align-items: center;
+      gap: .4rem;
+      color: var(--green);
+      font-size: .76rem;
+      font-weight: 600;
+      padding: .4rem .8rem;
+      background: var(--green-bg);
+      border-radius: 7px;
+      border: 1px solid rgba(26, 107, 74, .2)
+    }
+
+    .rules-saved.show {
+      display: inline-flex;
+      animation: pIn .3s both
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media(max-width:960px) {
+      .sidebar {
+        transform: translateX(-100%)
+      }
+
+      .main {
+        margin-left: 0
+      }
+
+      .kpi-row {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .g2,
+      .g3,
+      .g32,
+      .bias-panel {
+        grid-template-columns: 1fr
+      }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 6rem 1.5rem 3rem
+      }
+
+      .hero-r {
+        display: none
+      }
+
+      .lsec {
+        padding: 3.5rem 1.5rem
+      }
+
+      .l-nav {
+        padding: .9rem 1.5rem
+      }
+
+      .nav-links {
+        display: none
+      }
+
+      .ind-grid {
+        grid-template-columns: 1fr
+      }
+
+      .feat-grid {
+        grid-template-columns: 1fr 1fr
+      }
+
+      .l-cta {
+        padding: 3.5rem 1.5rem
+      }
+
+      .frow {
+        grid-template-columns: 1fr
+      }
+    }
+
+    /* ─────────────────────────────────────────────
+   WHATSAPP PREVIEW MODAL
+───────────────────────────────────────────── */
+    .wa-modal-ov {
+      position: fixed;
+      inset: 0;
+      background: rgba(11,15,26,.75);
+      backdrop-filter: blur(14px);
+      z-index: 99000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s
+    }
+    .wa-modal-ov.open {
+      opacity: 1;
+      pointer-events: all
+    }
+    .wa-phone {
+      width: 340px;
+      background: #ECE5DD;
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 32px 80px rgba(0,0,0,.5);
+      transform: scale(.88) translateY(30px);
+      transition: all .4s cubic-bezier(.4,0,.2,1)
+    }
+    .wa-modal-ov.open .wa-phone {
+      transform: scale(1) translateY(0)
+    }
+    .wa-header {
+      background: #075E54;
+      padding: .8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: .75rem
+    }
+    .wa-back {
+      color: rgba(255,255,255,.85);
+      font-size: 1.1rem;
+      cursor: pointer;
+      line-height: 1
+    }
+    .wa-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      flex-shrink: 0
+    }
+    .wa-contact-info {
+      flex: 1
+    }
+    .wa-contact-name {
+      font-size: .85rem;
+      font-weight: 600;
+      color: #fff
+    }
+    .wa-contact-status {
+      font-size: .68rem;
+      color: rgba(255,255,255,.65)
+    }
+    .wa-actions {
+      display: flex;
+      gap: .8rem;
+      color: rgba(255,255,255,.85);
+      font-size: 1rem
+    }
+    .wa-body {
+      padding: .85rem .9rem;
+      min-height: 260px;
+      max-height: 380px;
+      overflow-y: auto;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100'%3E%3Ccircle cx='50' cy='50' r='1' fill='%23ccc' opacity='.3'/%3E%3C/svg%3E");
+      display: flex;
+      flex-direction: column;
+      gap: .5rem
+    }
+    .wa-date-chip {
+      text-align: center;
+      font-size: .65rem;
+      color: #7a7e8a;
+      background: rgba(255,255,255,.75);
+      border-radius: 8px;
+      padding: .22rem .7rem;
+      align-self: center;
+      margin-bottom: .3rem
+    }
+    .wa-bubble {
+      max-width: 88%;
+      padding: .65rem .85rem .45rem;
+      border-radius: 12px;
+      font-size: .8rem;
+      line-height: 1.55;
+      position: relative;
+      animation: waPop .3s cubic-bezier(.4,0,.2,1) both
+    }
+    @keyframes waPop {
+      from { opacity:0; transform: scale(.9) translateY(10px) }
+      to   { opacity:1; transform: scale(1) translateY(0) }
+    }
+    .wa-bubble.sent {
+      background: #DCF8C6;
+      align-self: flex-end;
+      border-bottom-right-radius: 3px
+    }
+    .wa-bubble.recv {
+      background: #fff;
+      align-self: flex-start;
+      border-bottom-left-radius: 3px
+    }
+    .wa-meta {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: .25rem;
+      margin-top: .3rem
+    }
+    .wa-time {
+      font-size: .6rem;
+      color: #7a7e8a
+    }
+    .wa-ticks {
+      font-size: .72rem;
+      color: #34B7F1
+    }
+    .wa-typing {
+      background: #fff;
+      align-self: flex-start;
+      border-radius: 12px;
+      border-bottom-left-radius: 3px;
+      padding: .6rem .9rem;
+      display: none
+    }
+    .wa-typing .dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      background: #aaa;
+      border-radius: 50%;
+      animation: waDot 1.2s infinite;
+      margin: 0 1px
+    }
+    .wa-typing .dot:nth-child(2) { animation-delay: .2s }
+    .wa-typing .dot:nth-child(3) { animation-delay: .4s }
+    @keyframes waDot {
+      0%,60%,100% { transform: translateY(0) }
+      30%          { transform: translateY(-5px) }
+    }
+    .wa-input-bar {
+      background: #f0f0f0;
+      padding: .6rem .8rem;
+      display: flex;
+      align-items: center;
+      gap: .55rem
+    }
+    .wa-inp-fake {
+      flex: 1;
+      background: #fff;
+      border-radius: 20px;
+      padding: .5rem .9rem;
+      font-size: .78rem;
+      color: #aaa
+    }
+    .wa-send-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      background: #25D366;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+      font-size: .95rem;
+      cursor: pointer;
+      border: none
+    }
+    .wa-close-wrap {
+      text-align: center;
+      margin-top: 1rem
+    }
+    .wa-close-btn {
+      background: rgba(255,255,255,.15);
+      color: #fff;
+      border: 1.5px solid rgba(255,255,255,.3);
+      border-radius: 100px;
+      padding: .45rem 1.4rem;
+      font-size: .8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background .2s
+    }
+    .wa-close-btn:hover { background: rgba(255,255,255,.25) }
+    .wa-pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: .35rem;
+      padding: .28rem .8rem;
+      background: rgba(37,211,102,.15);
+      border: 1px solid rgba(37,211,102,.35);
+      border-radius: 100px;
+      font-size: .72rem;
+      font-weight: 700;
+      color: #1a7a40;
+      cursor: pointer;
+      transition: all .2s;
+      margin-top: .5rem
+    }
+    .wa-pill-btn:hover { background: rgba(37,211,102,.28) }
+  </style>
+</head>
+
+<body>
+
+  <!-- ═══════════ TOAST ═══════════ -->
+  <div class="toast" id="toast"><span id="t-ic">✅</span><span id="t-msg">Done</span></div>
+
+  <!-- ═══════════ WHATSAPP PREVIEW MODAL ═══════════ -->
+  <div class="wa-modal-ov" id="wa-modal">
+    <div style="display:flex;flex-direction:column;align-items:center">
+      <div class="wa-phone">
+        <!-- Header -->
+        <div class="wa-header">
+          <span class="wa-back" onclick="closeWA()">←</span>
+          <div class="wa-avatar" id="wa-av">👤</div>
+          <div class="wa-contact-info">
+            <div class="wa-contact-name" id="wa-name">Ravi Kumar</div>
+            <div class="wa-contact-status" id="wa-phone-num">+91 98765 43210</div>
+          </div>
+          <div class="wa-actions">📞 ⋮</div>
+        </div>
+        <!-- Chat body -->
+        <div class="wa-body" id="wa-body">
+          <div class="wa-date-chip" id="wa-date">Today</div>
+          <!-- Typing indicator -->
+          <div class="wa-typing" id="wa-typing">
+            <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+          </div>
+          <!-- Sent message bubble -->
+          <div class="wa-bubble sent" id="wa-bubble" style="display:none">
+            <div id="wa-msg-text"></div>
+            <div class="wa-meta">
+              <span class="wa-time" id="wa-msg-time">12:00</span>
+              <span class="wa-ticks">✓✓</span>
+            </div>
+          </div>
+          <!-- Delivery status -->
+          <div class="wa-bubble recv" id="wa-delivered" style="display:none;font-size:.72rem;color:#7a7e8a">
+            <span id="wa-status-text">Message delivered ✅</span>
+          </div>
+        </div>
+        <!-- Fake input bar -->
+        <div class="wa-input-bar">
+          <div class="wa-inp-fake">Type a message…</div>
+          <button class="wa-send-btn">➤</button>
+        </div>
+      </div>
+      <div class="wa-close-wrap">
+        <button class="wa-close-btn" onclick="closeWA()">✕ Close Preview</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     LANDING PAGE
+═══════════════════════════════════════════ -->
+  <div id="pg-landing" class="page active">
+
+    <nav class="l-nav" id="lnav">
+      <div class="nav-logo" onclick="openLogin()"><span class="nav-dot"></span>EquiMind AI</div>
+      <ul class="nav-links">
+        <li><a href="#sec-ind">Industries</a></li>
+        <li><a href="#sec-feat">Features</a></li>
+        <li><a href="#sec-cta">Get Started</a></li>
+        <button class="btn-nav" onclick="openLogin()">Login / Sign Up</button>
+      </ul>
+    </nav>
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="hblob hb1"></div>
+      <div class="hblob hb2"></div>
+      <div class="hblob hb3"></div>
+      <div class="hero-l">
+        <div class="badge"><span class="bdot"></span>Fairness-First AI Platform · 2025</div>
+        <h1><span class="h1u">AI That</span><span class="h1g">Thinks Fair.</span>Decides Clear.</h1>
+        <p class="hero-sub">Enterprise decision intelligence across Banking, HR & Healthcare — with built-in bias
+          detection, explainable outputs, and real-time fairness scoring.</p>
+        <div class="hero-btns">
+          <button class="btn-p" onclick="openLogin()"><span>Start Free Trial</span><svg width="14" height="14"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></button>
+          <a href="#sec-ind" class="btn-g">Explore Industries</a>
+        </div>
+        <div class="hero-stats">
+          <div>
+            <div class="hstat-n">92<sup>%</sup></div>
+            <div class="hstat-l">Bias Reduction</div>
+          </div>
+          <div>
+            <div class="hstat-n">3</div>
+            <div class="hstat-l">Industries</div>
+          </div>
+          <div>
+            <div class="hstat-n">100<sup>%</sup></div>
+            <div class="hstat-l">Explainable AI</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-r">
+        <div class="preview-card">
+          <div class="pc-bar">
+            <div class="pcd"></div>
+            <div class="pcd"></div>
+            <div class="pcd"></div><span class="pct">EquiMind · SBI Bank</span>
+          </div>
+          <div class="pc-body">
+            <div class="pc3">
+              <div class="pcc">
+                <div class="pcv">1,248</div>
+                <div class="pcl">Records</div>
+              </div>
+              <div class="pcc">
+                <div class="pcv" style="color:var(--green)">78%</div>
+                <div class="pcl">Approved</div>
+              </div>
+              <div class="pcc">
+                <div class="pcv" style="color:var(--red)">22%</div>
+                <div class="pcl">Rejected</div>
+              </div>
+            </div>
+            <div class="pc-bars">
+              <div class="pb"></div>
+              <div class="pb"></div>
+              <div class="pb"></div>
+              <div class="pb"></div>
+              <div class="pb"></div>
+              <div class="pb"></div>
+              <div class="pb"></div>
+            </div>
+            <div class="pc2">
+              <div class="pcg">
+                <div class="pgl">Fairness Score</div>
+                <div class="pgtr">
+                  <div class="pgf pgf1"></div>
+                </div>
+                <div class="pgv" style="color:var(--green)">92/100</div>
+              </div>
+              <div class="pcg">
+                <div class="pgl">Bias Level</div>
+                <div class="pgtr">
+                  <div class="pgf pgf2"></div>
+                </div>
+                <div class="pgv" style="color:var(--red)">Low 8%</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TICKER -->
+    <div class="ticker-wrap">
+      <div class="ticker">
+        <span class="ti">🏦 Banking <b>Loan Decisions</b> — Fair</span><span class="ti">👨‍💼 HR <b>Bias-Free
+            Hiring</b></span><span class="ti">🏥 Healthcare <b>Smart Triage</b></span><span class="ti">⚖️ <b>Fairness
+            Score</b> Real-time</span><span class="ti">📱 <b>WhatsApp</b> Notifications</span><span class="ti">📊 Old vs
+          New <b>CSV Reports</b></span>
+        <span class="ti">🏦 Banking <b>Loan Decisions</b> — Fair</span><span class="ti">👨‍💼 HR <b>Bias-Free
+            Hiring</b></span><span class="ti">🏥 Healthcare <b>Smart Triage</b></span><span class="ti">⚖️ <b>Fairness
+            Score</b> Real-time</span><span class="ti">📱 <b>WhatsApp</b> Notifications</span><span class="ti">📊 Old vs
+          New <b>CSV Reports</b></span>
+      </div>
+    </div>
+
+    <!-- INDUSTRIES -->
+    <section class="lsec sec-ind" id="sec-ind">
+      <div class="stag">Core Industries</div>
+      <div class="stitle">Three Industries. One Fair Platform.</div>
+      <p class="ssub">Upload data, set rules, get transparent AI decisions with full explainability.</p>
+      <div class="ind-grid">
+        <div class="ind-card" onclick="loginTo('banking')">
+          <div class="ind-icon">🏦</div>
+          <div class="ind-name">Banking</div>
+          <p class="ind-desc">Intelligent loan decisions with explainable approvals and automated WhatsApp alerts.</p>
+          <ul class="ind-feats">
+            <li><span class="ifd"></span>CSV upload & AI analysis</li>
+            <li><span class="ifd"></span>Form + prompt rules</li>
+            <li><span class="ifd"></span>Explainable reasons</li>
+            <li><span class="ifd"></span>Bias comparison reports</li>
+          </ul>
+        </div>
+        <div class="ind-card" onclick="loginTo('hr')">
+          <div class="ind-icon">👨‍💼</div>
+          <div class="ind-name">Human Resources</div>
+          <p class="ind-desc">Smart hiring that ranks candidates fairly with AI improvement tips for all applicants.</p>
+          <ul class="ind-feats">
+            <li><span class="ifd"></span>Interview score analysis</li>
+            <li><span class="ifd"></span>Ranked candidate output</li>
+            <li><span class="ifd"></span>Built-in HR chatbot</li>
+            <li><span class="ifd"></span>Rejection improvement tips</li>
+          </ul>
+        </div>
+        <div class="ind-card" onclick="loginTo('healthcare')">
+          <div class="ind-icon">🏥</div>
+          <div class="ind-name">Healthcare</div>
+          <p class="ind-desc">Patient triage engine predicts severity and auto-assigns to specialist doctors.</p>
+          <ul class="ind-feats">
+            <li><span class="ifd"></span>Patient data analysis</li>
+            <li><span class="ifd"></span>Critical/Risk/Normal triage</li>
+            <li><span class="ifd"></span>Auto doctor assignment</li>
+            <li><span class="ifd"></span>Medical AI chatbot</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="lsec" id="sec-feat" style="background:var(--white)">
+      <div class="stag">Platform Features</div>
+      <div class="stitle">Everything for Fair AI Decisions.</div>
+      <div class="feat-grid">
+        <div class="fc"><span class="fe">⚖️</span>
+          <div class="ft">Fairness Score Gauge</div>
+          <p class="fd">0–100 real-time fairness scoring with group-level comparison charts.</p>
+        </div>
+        <div class="fc"><span class="fe">🔍</span>
+          <div class="ft">Explainability Panel</div>
+          <p class="fd">Every decision has plain-English reasons — why approved or rejected.</p>
+        </div>
+        <div class="fc"><span class="fe">📊</span>
+          <div class="ft">Old vs New CSV Reports</div>
+          <p class="fd">Upload historical data and compare to measure bias reduction across all industries.</p>
+        </div>
+        <div class="fc"><span class="fe">📱</span>
+          <div class="ft">WhatsApp Notifications</div>
+          <p class="fd">Instant WhatsApp-style messages on approval, rejection or flagging with reasons.</p>
+        </div>
+        <div class="fc"><span class="fe">🤖</span>
+          <div class="ft">AI Chatbot Assistants</div>
+          <p class="fd">Built-in chatbots for Banking, HR & Healthcare — instant intelligent answers.</p>
+        </div>
+        <div class="fc"><span class="fe">🚩</span>
+          <div class="ft">Auto Flag & Solve</div>
+          <p class="fd">Suspicious cases are automatically flagged with one-click auto-resolve options.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="l-cta" id="sec-cta">
+      <div class="ctablob"></div>
+      <div style="position:relative;z-index:2">
+        <div class="stag" style="justify-content:center">Get Started</div>
+        <div class="stitle" style="margin:0 auto 1rem;text-align:center">Ready to Make Fair Decisions?</div>
+        <p class="ssub" style="margin:0 auto 2rem;text-align:center">Join organizations using EquiMind AI to eliminate
+          bias and build trustworthy AI.</p>
+        <div class="cta-btns">
+          <button class="btn-p" onclick="openLogin()"><span>Access Dashboard</span><svg width="14" height="14"
+              viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg></button>
+          <a href="#sec-ind" class="btn-g">Explore Features</a>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      <div class="fi">
+        <div>
+          <div class="fl">⚖ EquiMind AI</div>
+          <div class="fsl">AI That Thinks Fair.</div>
+        </div>
+        <ul class="flinks">
+          <li><a href="#sec-ind">Industries</a></li>
+          <li><a href="#sec-feat">Features</a></li>
+          <li><a href="#" onclick="openLogin();return false">Login</a></li>
+        </ul>
+        <div class="fc2">© 2025 EquiMind AI · Gemini + Firebase</div>
+      </div>
+    </footer>
+  </div><!-- /landing -->
+
+  <!-- ═══════════════════════════════════════════
+     LOGIN MODAL
+═══════════════════════════════════════════ -->
+  <div class="modal-ov" id="modal">
+    <div class="modal">
+      <button class="mclose" onclick="closeLogin()">✕</button>
+      <div class="mlogo"><span class="nav-dot"></span>EquiMind AI</div>
+      <p class="msub">Sign in to your organization dashboard</p>
+      <div class="fg2">
+        <div class="fg"><label>First Name</label><input id="ln-name" type="text" placeholder="Akila"></div>
+        <div class="fg"><label>Last Name</label><input type="text" placeholder="Kumar"></div>
+      </div>
+      <div class="fg"><label>Email</label><input type="email" placeholder="admin@company.com"></div>
+      <div class="fg"><label>Password</label><input type="password" placeholder="••••••••"></div>
+      <div class="fg2">
+        <div class="fg"><label>Organization Type</label>
+          <select id="ln-type">
+            <option value="bank">Bank</option>
+            <option value="hr">Company (HR)</option>
+            <option value="hospital">Hospital</option>
+          </select>
+        </div>
+        <div class="fg"><label>Organization Name</label><input id="ln-org" type="text" placeholder="SBI / TCS / Apollo">
+        </div>
+      </div>
+      <button class="btn-login" onclick="doLogin()"><span>Access Dashboard →</span></button>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════════
+     DASHBOARD
+═══════════════════════════════════════════ -->
+  <div id="pg-dashboard" class="page">
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="sb-logo"><span class="nav-dot"></span><span class="sb-logo-t">EquiMind AI</span></div>
+      <nav class="sb-nav">
+        <div class="sb-sec">Overview</div>
+        <button class="sb-item act" onclick="showP('overview')"><span class="sb-icon">📊</span>Dashboard</button>
+        <div class="sb-sec">Modules</div>
+        <button class="sb-item mod-bank" onclick="showP('banking')"><span class="sb-icon">🏦</span>Banking</button>
+        <button class="sb-item mod-bank" onclick="showP('bank-client')"><span class="sb-icon">📋</span>Bank
+          Requests</button>
+        <button class="sb-item mod-hr" onclick="showP('hr')"><span class="sb-icon">👨‍💼</span>HR Hiring</button>
+        <button class="sb-item mod-hr" onclick="showP('hr-client')"><span class="sb-icon">📋</span>HR Requests</button>
+        <button class="sb-item mod-health" onclick="showP('healthcare')"><span
+            class="sb-icon">🏥</span>Healthcare</button>
+        <button class="sb-item mod-health" onclick="showP('health-client')"><span class="sb-icon">📋</span>Health
+          Requests</button>
+        <div class="sb-sec">Analytics</div>
+        <button class="sb-item" onclick="showP('bias')"><span class="sb-icon">⚖️</span>Bias Analytics<span
+            class="sb-badge">3</span></button>
+        <button class="sb-item" onclick="showP('history')"><span class="sb-icon">📜</span>History</button>
+        <button class="sb-item" onclick="showP('notifications')"><span class="sb-icon">🔔</span>Notifications<span
+            class="sb-badge">5</span></button>
+      </nav>
+      <div class="sb-foot">
+        <div class="sb-org">
+          <div class="sb-av" id="sb-av">A</div>
+          <div>
+            <div class="sb-uname" id="sb-uname">Admin</div>
+            <div class="sb-urole" id="sb-urole">Bank · SBI</div>
+          </div>
+        </div>
+        <button class="sb-logout" onclick="doLogout()">← Back to Landing</button>
+      </div>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+      <div class="topbar">
+        <div class="tb-t" id="tb-title">Dashboard Overview</div>
+        <div class="tb-r">
+          <div class="tb-search">🔍 Search...</div>
+          <div class="tb-notif">🔔<span class="nb"></span></div>
+          <div class="tb-org" id="tb-org">SBI Bank</div>
+        </div>
+      </div>
+
+      <div class="content">
+
+        <!-- ══════════ OVERVIEW ══════════ -->
+        <div class="panel act" id="panel-overview">
+          <div class="pg-head">
+            <div class="pg-tag">Overview</div>
+            <div class="pg-title">Dashboard</div>
+          </div>
+          <div class="kpi-row">
+            <div class="kpi">
+              <div class="kpi-ic">📁</div>
+              <div class="kpi-v">3,284</div>
+              <div class="kpi-l">Total Records</div><span class="kpi-tr up">↑ 12%</span>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic">✅</div>
+              <div class="kpi-v">78%</div>
+              <div class="kpi-l">Approved Rate</div><span class="kpi-tr up">↑ 4%</span>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic">❌</div>
+              <div class="kpi-v">19%</div>
+              <div class="kpi-l">Rejected Rate</div><span class="kpi-tr dn">↓ 3%</span>
+            </div>
+            <div class="kpi">
+              <div class="kpi-ic">⚖️</div>
+              <div class="kpi-v">92</div>
+              <div class="kpi-l">Fairness Score</div><span class="kpi-tr up">↑ 8pts</span>
+            </div>
+          </div>
+          <div class="g32" style="margin-bottom:1.2rem">
+            <div class="card">
+              <div class="card-h">
+                <div>
+                  <div class="card-t">Decision Trend — Last 7 Days</div>
+                  <div class="card-sub">All modules combined</div>
+                </div><span class="pill pill-green">Live</span>
+              </div>
+              <div class="card-body">
+                <div class="bar-chart">
+                  <div class="bch">
+                    <div class="bc-v">182</div>
+                    <div class="bc-b" style="height:72px;background:var(--green);animation-delay:.1s"></div>
+                    <div class="bc-l">Mon</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">215</div>
+                    <div class="bc-b" style="height:88px;background:var(--green);animation-delay:.2s"></div>
+                    <div class="bc-l">Tue</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">96</div>
+                    <div class="bc-b" style="height:38px;background:rgba(26,107,74,.3);animation-delay:.3s"></div>
+                    <div class="bc-l">Wed</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">235</div>
+                    <div class="bc-b" style="height:96px;background:var(--green);animation-delay:.4s"></div>
+                    <div class="bc-l">Thu</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">180</div>
+                    <div class="bc-b" style="height:72px;background:var(--green);animation-delay:.5s"></div>
+                    <div class="bc-l">Fri</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">148</div>
+                    <div class="bc-b" style="height:58px;background:rgba(26,107,74,.3);animation-delay:.6s"></div>
+                    <div class="bc-l">Sat</div>
+                  </div>
+                  <div class="bch">
+                    <div class="bc-v">200</div>
+                    <div class="bc-b" style="height:82px;background:var(--green);animation-delay:.7s"></div>
+                    <div class="bc-l">Sun</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h">
+                <div class="card-t">Outcome Split</div>
+              </div>
+              <div class="card-body">
+                <div class="donut-wrap">
+                  <div class="donut">
+                    <svg viewBox="0 0 36 36" width="110" height="110">
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(11,15,26,.07)" stroke-width="3.2" />
+                      <circle cx="18" cy="18" r="15.9" fill="none" stroke="var(--green)" stroke-width="3.2"
+                        stroke-dasharray="78 22" stroke-linecap="round" />
+                    </svg>
+                    <div class="donut-txt">
+                      <div class="dv">78%</div>
+                      <div class="dl">Approved</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="legend">
+                  <div class="leg"><span class="leg-d" style="background:var(--green)"></span>Approved — 78%</div>
+                  <div class="leg"><span class="leg-d" style="background:var(--red)"></span>Rejected — 19%</div>
+                  <div class="leg"><span class="leg-d" style="background:var(--amber)"></span>Flagged — 3%</div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-h">
+              <div class="card-t">Recent Decisions</div><button class="btn-sm" onclick="showP('history')">View
+                All</button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Module</th>
+                    <th>Decision</th>
+                    <th>Confidence</th>
+                    <th>Time</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="mod-bank">
+                    <td>#1041</td>
+                    <td>Ravi Kumar</td>
+                    <td>🏦 Banking</td>
+                    <td><span class="pill pill-green">✓ Approved</span></td>
+                    <td>94%</td>
+                    <td>2 min ago</td>
+                  </tr>
+                  <tr class="mod-hr">
+                    <td>#1040</td>
+                    <td>Priya Sharma</td>
+                    <td>👨‍💼 HR</td>
+                    <td><span class="pill pill-green">✓ Selected</span></td>
+                    <td>88%</td>
+                    <td>5 min ago</td>
+                  </tr>
+                  <tr class="mod-bank">
+                    <td>#1039</td>
+                    <td>James Wilson</td>
+                    <td>🏦 Banking</td>
+                    <td><span class="pill pill-red">✗ Rejected</span></td>
+                    <td>91%</td>
+                    <td>8 min ago</td>
+                  </tr>
+                  <tr class="mod-health">
+                    <td>#1038</td>
+                    <td>Meera Patel</td>
+                    <td>🏥 Healthcare</td>
+                    <td><span class="pill pill-green">✓ Normal</span></td>
+                    <td>87%</td>
+                    <td>12 min ago</td>
+                  </tr>
+                  <tr class="mod-hr">
+                    <td>#1037</td>
+                    <td>Arjun Das</td>
+                    <td>👨‍💼 HR</td>
+                    <td><span class="pill pill-red">✗ Rejected</span></td>
+                    <td>79%</td>
+                    <td>15 min ago</td>
+                  </tr>
+                  <tr class="mod-health">
+                    <td>#1036</td>
+                    <td>Ramesh Kumar</td>
+                    <td>🏥 Healthcare</td>
+                    <td><span class="pill pill-amber">⚠ Critical</span></td>
+                    <td>96%</td>
+                    <td>22 min ago</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ BANKING ══════════ -->
+        <div class="panel" id="panel-banking">
+          <div class="pg-head">
+            <div class="pg-tag">Banking Module</div>
+            <div class="pg-title">Loan Decision System</div>
+          </div>
+
+          <!-- STEP 1: Upload -->
+          <div class="g2" style="margin-bottom:1.2rem">
+            <div class="gcol">
+              <!-- Upload -->
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 1 — Upload Dataset</div>
+                </div>
+                <div class="card-body">
+                  <div class="upload-z" onclick="simulateUpload('bank')">
+                    <input type="file" accept=".csv" onchange="handleFile(this,'bank')">
+                    <div class="uz-ic">📂</div>
+                    <div class="uz-t">Upload Loan Dataset (CSV)</div>
+                    <p class="uz-s">Columns: name, income, credit_score, employment, loan_amount, phone</p>
+                    <button class="btn-run btn-outline" style="max-width:160px;margin:0 auto"
+                      onclick="event.stopPropagation();simulateUpload('bank')">Choose CSV File</button>
+                    <div class="uz-fn" id="bank-file-name">📄 sbi_loans_dataset.csv — 248 records loaded</div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Rules -->
+              <div class="card" id="bank-rules-card">
+                <div class="card-h">
+                  <div>
+                    <div class="card-t">Step 2 — Set Decision Rules</div>
+                  </div>
+                  <div style="display:flex;gap:.5rem;align-items:center">
+                    <span class="rules-saved" id="bank-rules-saved">✓ Rules Saved</span>
+                    <button class="btn-sm" onclick="editRules('bank')">✏️ Edit Rules</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tabs">
+                    <button class="tab act" id="bank-tab-form" onclick="switchTab('bank','form')">📋 Form Rules</button>
+                    <button class="tab" id="bank-tab-prompt" onclick="switchTab('bank','prompt')">💬 Prompt
+                      Rules</button>
+                  </div>
+                  <div id="bank-form-area">
+                    <div class="frow">
+                      <div class="fi"><label>Min Monthly Income (₹)</label><input id="b-income" type="number"
+                          value="25000" placeholder="25000"></div>
+                      <div class="fi"><label>Min Credit Score</label><input id="b-credit" type="number" value="650"
+                          placeholder="650"></div>
+                    </div>
+                    <div class="frow">
+                      <div class="fi"><label>Employment Type</label><select id="b-emp">
+                          <option>Salaried</option>
+                          <option>Self-Employed</option>
+                          <option>Business</option>
+                          <option>Any</option>
+                        </select></div>
+                      <div class="fi"><label>Max Loan Amount (₹)</label><input id="b-loan" type="number" value="500000"
+                          placeholder="500000"></div>
+                    </div>
+                    <div class="frow">
+                      <div class="fi"><label>Min Employment Years</label><input id="b-years" type="number" value="1"
+                          placeholder="1"></div>
+                      <div class="fi"><label>Max Existing Loans</label><input id="b-existing" type="number" value="2"
+                          placeholder="2"></div>
+                    </div>
+                  </div>
+                  <div id="bank-prompt-area" style="display:none">
+                    <div class="fi-full"><label>Natural Language Rule</label>
+                      <textarea id="b-prompt"
+                        placeholder="e.g. Approve applicants with income above ₹30,000, credit score above 700, stable employment for more than 2 years. Reject if any loan defaults exist. Flag if income is borderline 25-30k.">Approve applicants with income above ₹25,000 and credit score above 650. Reject if credit score below 500 or existing loan defaults. Flag cases with credit score between 500-650 for manual review.</textarea>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+                    <button class="btn-run btn-outline" style="max-width:140px" onclick="saveRules('bank')">💾 Save
+                      Rules</button>
+                    <button class="btn-run btn-green" onclick="runBankAnalysis()">🤖 Run AI Analysis</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Results -->
+            <div class="gcol" id="bank-results-col">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 3 — AI Analysis Results</div><span class="pill pill-gray"
+                    id="bank-status-pill">Waiting...</span>
+                </div>
+                <div class="card-body" id="bank-results-body">
+                  <div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.85rem">
+                    <div style="font-size:2.5rem;margin-bottom:.8rem">🤖</div>
+                    Upload a dataset and set rules, then click <strong>Run AI Analysis</strong> to see results here.
+                  </div>
+                </div>
+              </div>
+
+              <!-- Chatbot -->
+              <div class="chat-box">
+                <div class="chat-hd chat-green">
+                  <div class="chat-av" style="background:var(--green-bg)">🏦</div>
+                  <div>
+                    <div class="chat-nm">Banking AI Assistant</div>
+                    <div class="chat-st" style="color:var(--green)">Online · Ready to help</div>
+                  </div>
+                </div>
+                <div class="chat-msgs" id="bank-chat">
+                  <div class="msg bot">Hello! I'm your Banking AI assistant. Ask me about loan decisions, approval
+                    rates, or specific applicants.</div>
+                  <div class="msg bot">Try: "Why was Ravi approved?" or "Show rejection rate" or "Flag criteria"</div>
+                </div>
+                <div class="chat-inp-row">
+                  <input class="chat-inp" id="bank-chat-inp" placeholder="Ask about loan decisions..."
+                    onkeydown="if(event.key==='Enter')sendChat('bank')">
+                  <button class="chat-send" onclick="sendChat('bank')">➤</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Export -->
+          <div class="report-banner">
+            <div class="rb-t">📊 Export & Reports</div>
+            <div class="rb-s">Export all loan decisions with reasons, confidence scores and fairness analysis</div>
+            <div class="rb-btns">
+              <button class="rb-btn" onclick="exportExcel('Banking')">📥 Export Excel</button>
+              <button class="rb-btn" onclick="exportPDF('Banking')">📄 Export PDF Report</button>
+              <button class="rb-btn" onclick="showP('bias')">⚖️ Bias Analysis</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ BANK CLIENT REQUESTS ══════════ -->
+        <div class="panel" id="panel-bank-client">
+          <div class="pg-head">
+            <div class="pg-tag">Banking</div>
+            <div class="pg-title">Client Requests & Notifications</div>
+          </div>
+          <div style="margin-bottom:1.2rem">
+            <div class="card">
+              <div class="card-h">
+                <div class="card-t">Client Loan Requests</div><button class="btn-sm-g"
+                  onclick="runBankAnalysis();showP('banking')">▶ Run AI Analysis</button>
+              </div>
+              <div class="tbl-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Request ID</th>
+                      <th>Client Name</th>
+                      <th>Phone</th>
+                      <th>Amount (₹)</th>
+                      <th>Income</th>
+                      <th>Credit Score</th>
+                      <th>Status</th>
+                      <th>Notification</th>
+                    </tr>
+                  </thead>
+                  <tbody id="bank-req-table">
+                    <tr>
+                      <td>#REQ-001</td>
+                      <td>Ravi Kumar</td>
+                      <td>+91-98765-43210</td>
+                      <td>3,50,000</td>
+                      <td>₹45,000/mo</td>
+                      <td>740</td>
+                      <td><span class="pill pill-blue req-new">New</span></td>
+                      <td><span style="color:var(--muted);font-size:.74rem">Pending analysis</span></td>
+                    </tr>
+                    <tr>
+                      <td>#REQ-002</td>
+                      <td>James Wilson</td>
+                      <td>+91-98111-22333</td>
+                      <td>5,00,000</td>
+                      <td>₹28,000/mo</td>
+                      <td>580</td>
+                      <td><span class="pill pill-blue req-new">New</span></td>
+                      <td><span style="color:var(--muted);font-size:.74rem">Pending analysis</span></td>
+                    </tr>
+                    <tr>
+                      <td>#REQ-003</td>
+                      <td>Priya Mehta</td>
+                      <td>+91-97755-66441</td>
+                      <td>2,00,000</td>
+                      <td>₹32,000/mo</td>
+                      <td>690</td>
+                      <td><span class="pill pill-amber req-pending">Processing</span></td>
+                      <td><span style="color:var(--muted);font-size:.74rem">Pending analysis</span></td>
+                    </tr>
+                    <tr>
+                      <td>#REQ-004</td>
+                      <td>Sunita Rao</td>
+                      <td>+91-96644-55332</td>
+                      <td>4,50,000</td>
+                      <td>₹55,000/mo</td>
+                      <td>760</td>
+                      <td><span class="pill pill-blue req-new">New</span></td>
+                      <td><span style="color:var(--muted);font-size:.74rem">Pending analysis</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- User Notification Preview -->
+          <div class="card" style="margin-bottom:1.2rem">
+            <div class="card-h">
+              <div class="card-t">Client Notification Preview</div>
+              <div class="card-sub">What clients see on their webpage after analysis</div>
+            </div>
+            <div class="card-body">
+              <div class="g2">
+                <div class="user-notif-banner unb-approved">
+                  <div class="unb-ic">🎉</div>
+                  <div>
+                    <div class="unb-title">Dear Ravi Kumar — Your Loan is APPROVED!</div>
+                    <div class="unb-body">Congratulations! Your loan application of ₹3,50,000 with <strong>SBI
+                        Bank</strong> has been <strong>approved</strong> with a confidence score of
+                      <strong>94%</strong>.
+                      <ul class="unb-reasons">
+                        <li><span class="ri ri-ok">✓</span>Your monthly income of ₹45,000 exceeds the minimum threshold
+                          of ₹25,000</li>
+                        <li><span class="ri ri-ok">✓</span>Your credit score of 740 is Excellent (required: 650+)</li>
+                        <li><span class="ri ri-ok">✓</span>Stable salaried employment for 4+ years confirmed</li>
+                        <li><span class="ri ri-ok">✓</span>No existing loan defaults detected in your history</li>
+                      </ul>
+                      <div
+                        style="margin-top:.8rem;font-size:.78rem;background:var(--green-bg);padding:.7rem .9rem;border-radius:8px;border:1px solid rgba(26,107,74,.2);color:var(--green)">
+                        📋 <strong>Next Steps:</strong> Our relationship manager will contact you within 24 hours.
+                        Please keep your KYC documents (Aadhaar, PAN, salary slips) ready for verification.
+                      </div>
+                      <div class="wa-notif wa-ok" style="margin-top:.7rem">📱 WhatsApp sent: "Hi Ravi Kumar, your SBI
+                        loan of ₹3,50,000 has been approved! Our team will contact you within 24 hours. Ref: #LN-2041"
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="user-notif-banner unb-rejected">
+                  <div class="unb-ic">❌</div>
+                  <div>
+                    <div class="unb-title">Dear James Wilson — Loan Application Rejected</div>
+                    <div class="unb-body">We regret to inform you that your loan application of ₹5,00,000 has been
+                      <strong>rejected</strong> at this time.
+                      <ul class="unb-reasons">
+                        <li><span class="ri ri-no">✗</span>Credit score 580 is below the required minimum of 650</li>
+                        <li><span class="ri ri-no">✗</span>1 existing loan default was found in your credit history</li>
+                        <li><span class="ri ri-ok">✓</span>Income meets the threshold (₹28,000 ≥ ₹25,000)</li>
+                      </ul>
+                      <div class="improve-box" style="margin-top:.8rem">
+                        💡 <strong>How to get approved in future:</strong><br>
+                        1. Clear existing loan default — improves credit by ~80 points<br>
+                        2. Maintain consistent bill/EMI payments for 6 months<br>
+                        3. Reduce credit utilization below 30%<br>
+                        4. Reapply after 6 months of improved credit history
+                      </div>
+                      <div class="wa-notif wa-no" style="margin-top:.7rem">📱 WhatsApp sent: "Hi James Wilson, your SBI
+                        loan application was rejected. Reason: Credit score 580 (min 650 required). Improve your CIBIL
+                        score and reapply. Contact: support@sbi.com"</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ HR ══════════ -->
+        <div class="panel" id="panel-hr">
+          <div class="pg-head">
+            <div class="pg-tag">HR Module</div>
+            <div class="pg-title">Smart Hiring System</div>
+          </div>
+          <div class="g2" style="margin-bottom:1.2rem">
+            <div class="gcol">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 1 — Upload Interview Scores</div>
+                </div>
+                <div class="card-body">
+                  <div class="upload-z" onclick="simulateUpload('hr')">
+                    <input type="file" accept=".csv" onchange="handleFile(this,'hr')">
+                    <div class="uz-ic">📋</div>
+                    <div class="uz-t">Upload Candidate Data (CSV)</div>
+                    <p class="uz-s">Columns: name, score, experience, skills, communication, phone</p>
+                    <button class="btn-run btn-outline" style="max-width:160px;margin:0 auto"
+                      onclick="event.stopPropagation();simulateUpload('hr')">Choose CSV File</button>
+                    <div class="uz-fn" id="hr-file-name">📄 tcs_candidates.csv — 12 applicants loaded</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 2 — Set Hiring Rules</div>
+                  <div style="display:flex;gap:.5rem;align-items:center">
+                    <span class="rules-saved" id="hr-rules-saved">✓ Rules Saved</span>
+                    <button class="btn-sm" onclick="editRules('hr')">✏️ Edit</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tabs">
+                    <button class="tab act" id="hr-tab-form" onclick="switchTab('hr','form')">📋 Form Rules</button>
+                    <button class="tab" id="hr-tab-prompt" onclick="switchTab('hr','prompt')">💬 Prompt Rules</button>
+                  </div>
+                  <div id="hr-form-area">
+                    <div class="frow">
+                      <div class="fi"><label>Job Role</label><input id="hr-role" value="Data Analyst"
+                          placeholder="Data Analyst"></div>
+                      <div class="fi"><label>Top N Candidates</label><input id="hr-top" type="number" value="3"
+                          placeholder="3"></div>
+                    </div>
+                    <div class="frow">
+                      <div class="fi"><label>Min Experience (years)</label><input id="hr-exp" type="number" value="2"
+                          placeholder="2"></div>
+                      <div class="fi"><label>Min Score (%)</label><input id="hr-score" type="number" value="70"
+                          placeholder="70"></div>
+                    </div>
+                    <div class="fi-full"><label>Required Skills</label><input id="hr-skills" value="Python, SQL"
+                        placeholder="Python, SQL, Tableau"></div>
+                  </div>
+                  <div id="hr-prompt-area" style="display:none">
+                    <div class="fi-full"><label>Natural Language Requirement</label>
+                      <textarea
+                        id="hr-prompt">Select top 3 candidates for Data Analyst role. Must have Python and SQL skills, minimum 2 years experience. Strong communication is important. Rank by overall suitability.</textarea>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+                    <button class="btn-run btn-outline" style="max-width:140px" onclick="saveRules('hr')">💾 Save
+                      Rules</button>
+                    <button class="btn-run btn-blue" onclick="runHRAnalysis()">🤖 Rank Candidates</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- HR Chatbot -->
+              <div class="chat-box">
+                <div class="chat-hd chat-blue">
+                  <div class="chat-av">👨‍💼</div>
+                  <div>
+                    <div class="chat-nm">HR AI Assistant</div>
+                    <div class="chat-st" style="color:var(--blue)">Online</div>
+                  </div>
+                </div>
+                <div class="chat-msgs" id="hr-chat">
+                  <div class="msg bot">Hi! I'm your HR assistant. Ask about candidates, skills, or rankings.</div>
+                  <div class="msg bot">Try: "Give best candidate for Data Analyst" or "Why was Arjun rejected?"</div>
+                </div>
+                <div class="chat-inp-row">
+                  <input class="chat-inp" id="hr-chat-inp" placeholder="Ask about candidates..."
+                    onkeydown="if(event.key==='Enter')sendChat('hr')">
+                  <button class="chat-send" style="background:var(--blue)" onclick="sendChat('hr')">➤</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="gcol">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 3 — Ranked Candidates</div><span class="pill pill-gray"
+                    id="hr-status-pill">Waiting...</span>
+                </div>
+                <div class="card-body" id="hr-results-body">
+                  <div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.85rem">
+                    <div style="font-size:2.5rem;margin-bottom:.8rem">👨‍💼</div>Upload candidates CSV and set rules,
+                    then click <strong>Rank Candidates</strong>.
+                  </div>
+                </div>
+              </div>
+              <div class="report-banner">
+                <div class="rb-t">Export HR Results</div>
+                <div class="rb-s">Export all candidate rankings and decisions</div>
+                <div class="rb-btns">
+                  <button class="rb-btn" onclick="exportExcel('HR')">📥 Export Excel</button>
+                  <button class="rb-btn" onclick="exportPDF('HR')">📄 PDF Report</button>
+                  <button class="rb-btn" onclick="showP('bias')">⚖️ Bias Analysis</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ HR CLIENT REQUESTS ══════════ -->
+        <div class="panel" id="panel-hr-client">
+          <div class="pg-head">
+            <div class="pg-tag">HR</div>
+            <div class="pg-title">Candidate Requests & Notifications</div>
+          </div>
+          <div class="card" style="margin-bottom:1.2rem">
+            <div class="card-h">
+              <div class="card-t">Candidate Applications</div><button class="btn-sm-g"
+                onclick="runHRAnalysis();showP('hr')">▶ Run AI Analysis</button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>App ID</th>
+                    <th>Candidate Name</th>
+                    <th>Role</th>
+                    <th>Score</th>
+                    <th>Experience</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Notification</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#APP-001</td>
+                    <td>Priya Sharma</td>
+                    <td>Data Analyst</td>
+                    <td>94%</td>
+                    <td>3 yrs</td>
+                    <td>+91-98765-11111</td>
+                    <td><span class="pill pill-blue">New</span></td>
+                    <td><span style="color:var(--muted);font-size:.74rem">Pending</span></td>
+                  </tr>
+                  <tr>
+                    <td>#APP-002</td>
+                    <td>Rahul Verma</td>
+                    <td>Data Analyst</td>
+                    <td>87%</td>
+                    <td>2.5 yrs</td>
+                    <td>+91-98765-22222</td>
+                    <td><span class="pill pill-blue">New</span></td>
+                    <td><span style="color:var(--muted);font-size:.74rem">Pending</span></td>
+                  </tr>
+                  <tr>
+                    <td>#APP-003</td>
+                    <td>Arjun Das</td>
+                    <td>Data Analyst</td>
+                    <td>62%</td>
+                    <td>1 yr</td>
+                    <td>+91-98765-33333</td>
+                    <td><span class="pill pill-amber">Processing</span></td>
+                    <td><span style="color:var(--muted);font-size:.74rem">Pending</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <div class="card-t">Candidate Notification Preview</div>
+              <div class="card-sub">What candidates see after analysis</div>
+            </div>
+            <div class="card-body">
+              <div class="g2">
+                <div class="user-notif-banner unb-approved">
+                  <div class="unb-ic">🎊</div>
+                  <div>
+                    <div class="unb-title">Dear Priya Sharma — You are SELECTED!</div>
+                    <div class="unb-body"><strong>TCS</strong> is pleased to inform you that you have been
+                      <strong>selected</strong> for the <strong>Data Analyst</strong> position with a confidence of 94%.
+                      <ul class="unb-reasons">
+                        <li><span class="ri ri-ok">✓</span>Highest overall score (94%) among all candidates</li>
+                        <li><span class="ri ri-ok">✓</span>3 years of relevant experience (required: 2 years)</li>
+                        <li><span class="ri ri-ok">✓</span>Expert in Python, SQL, and Tableau — all required skills</li>
+                        <li><span class="ri ri-ok">✓</span>Excellent communication skills rated 92/100</li>
+                      </ul>
+                      <div class="next-steps">📋 <strong>Next Steps:</strong> Our HR team will contact you within 2
+                        business days for document verification. Please keep your offer acceptance ready. Welcome to
+                        TCS!</div>
+                      <div class="wa-notif wa-ok" style="margin-top:.6rem">📱 WhatsApp: "Congratulations Priya Sharma!
+                        You've been selected for Data Analyst at TCS. Our HR team will contact you within 2 days.
+                        Reference: #TCS-HR-2041"</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="user-notif-banner unb-rejected">
+                  <div class="unb-ic">📩</div>
+                  <div>
+                    <div class="unb-title">Dear Arjun Das — Application Update</div>
+                    <div class="unb-body">Thank you for applying at <strong>TCS</strong> for the <strong>Data
+                        Analyst</strong> role. After careful AI-assisted evaluation, we regret to inform you that you
+                      were not selected at this time.
+                      <ul class="unb-reasons">
+                        <li><span class="ri ri-no">✗</span>Overall score 62% is below the minimum threshold of 70%</li>
+                        <li><span class="ri ri-no">✗</span>Only 1 year experience (minimum 2 years required for this
+                          role)</li>
+                        <li><span class="ri ri-warn">!</span>Missing SQL skills which are required for Data Analyst</li>
+                      </ul>
+                      <div class="improve-box" style="margin-top:.7rem">
+                        💡 <strong>How to improve for future applications:</strong><br>
+                        1. Complete an SQL certification (e.g. Oracle SQL or PostgreSQL — 2-3 months)<br>
+                        2. Build 2-3 end-to-end data analysis portfolio projects on GitHub<br>
+                        3. Gain 1 more year of hands-on experience to meet the 2-year requirement<br>
+                        4. Practice SQL query optimization and data visualization with Tableau<br>
+                        <em style="color:var(--green);display:block;margin-top:.4rem">🌟 We encourage you to reapply in
+                          12 months. TCS values your interest!</em>
+                      </div>
+                      <div class="wa-notif wa-no" style="margin-top:.6rem">📱 WhatsApp: "Dear Arjun Das, your TCS
+                        application for Data Analyst was not shortlisted this time. Key gap: SQL skills & experience.
+                        Tips sent to your email. Keep improving! — TCS HR"</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ HEALTHCARE ══════════ -->
+        <div class="panel" id="panel-healthcare">
+          <div class="pg-head">
+            <div class="pg-tag">Healthcare Module</div>
+            <div class="pg-title">Patient Decision System</div>
+          </div>
+          <div class="g2" style="margin-bottom:1.2rem">
+            <div class="gcol">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 1 — Upload Patient Data</div>
+                </div>
+                <div class="card-body">
+                  <div class="upload-z" onclick="simulateUpload('health')">
+                    <input type="file" accept=".csv" onchange="handleFile(this,'health')">
+                    <div class="uz-ic">🏥</div>
+                    <div class="uz-t">Upload Patient Data (CSV)</div>
+                    <p class="uz-s">Columns: name, age, bp, temperature, spo2, heart_rate, glucose, symptoms, phone</p>
+                    <button class="btn-run btn-outline" style="max-width:160px;margin:0 auto"
+                      onclick="event.stopPropagation();simulateUpload('health')">Choose CSV File</button>
+                    <div class="uz-fn" id="health-file-name">📄 apollo_patients.csv — 18 patients loaded</div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 2 — Set Medical Rules</div>
+                  <div style="display:flex;gap:.5rem;align-items:center">
+                    <span class="rules-saved" id="health-rules-saved">✓ Rules Saved</span>
+                    <button class="btn-sm" onclick="editRules('health')">✏️ Edit</button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="tabs">
+                    <button class="tab act" id="health-tab-form" onclick="switchTab('health','form')">📋 Form
+                      Rules</button>
+                    <button class="tab" id="health-tab-prompt" onclick="switchTab('health','prompt')">💬 Prompt
+                      Rules</button>
+                  </div>
+                  <div id="health-form-area">
+                    <div class="frow">
+                      <div class="fi"><label>Normal BP (systolic max)</label><input id="h-bp" value="120"
+                          placeholder="120"></div>
+                      <div class="fi"><label>Normal Temp max (°C)</label><input id="h-temp" value="37.2"
+                          placeholder="37.2"></div>
+                    </div>
+                    <div class="frow">
+                      <div class="fi"><label>Critical SpO2 below (%)</label><input id="h-spo2" value="90"
+                          placeholder="90"></div>
+                      <div class="fi"><label>Emergency Glucose above</label><input id="h-glucose" value="300"
+                          placeholder="300 mg/dL"></div>
+                    </div>
+                    <div class="frow">
+                      <div class="fi"><label>Risk Heart Rate above</label><input id="h-hr" value="100"
+                          placeholder="100 bpm"></div>
+                      <div class="fi"><label>Critical Temp above (°C)</label><input id="h-crittemp" value="39"
+                          placeholder="39"></div>
+                    </div>
+                  </div>
+                  <div id="health-prompt-area" style="display:none">
+                    <div class="fi-full"><label>Medical Rule (Prompt)</label>
+                      <textarea
+                        id="health-prompt">Flag patients with SpO2 below 90% as CRITICAL and assign to Cardiologist. Temperature above 39°C with heart rate above 120 is CRITICAL. Temperature 38-39°C is RISK. Glucose above 300 assign to Endocrinologist. Assign chest pain patients to Cardiologist. Assign fever patients to General Physician.</textarea>
+                    </div>
+                  </div>
+                  <div style="display:flex;gap:.7rem;flex-wrap:wrap">
+                    <button class="btn-run btn-outline" style="max-width:140px" onclick="saveRules('health')">💾 Save
+                      Rules</button>
+                    <button class="btn-run btn-amber" onclick="runHealthAnalysis()">🤖 Analyze & Predict</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Health Chatbot -->
+              <div class="chat-box">
+                <div class="chat-hd chat-health">
+                  <div class="chat-av">🏥</div>
+                  <div>
+                    <div class="chat-nm">Medical AI Assistant</div>
+                    <div class="chat-st" style="color:#8a6000">Online</div>
+                  </div>
+                </div>
+                <div class="chat-msgs" id="health-chat">
+                  <div class="msg bot">Hello! I'm your Medical AI assistant. Ask about patient conditions, severity, or
+                    doctor assignments.</div>
+                </div>
+                <div class="chat-inp-row">
+                  <input class="chat-inp" id="health-chat-inp" placeholder="Ask about patients..."
+                    onkeydown="if(event.key==='Enter')sendChat('health')">
+                  <button class="chat-send" style="background:var(--amber);color:var(--ink)"
+                    onclick="sendChat('health')">➤</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="gcol">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Step 3 — Patient Triage Results</div><span class="pill pill-gray"
+                    id="health-status-pill">Waiting...</span>
+                </div>
+                <div class="card-body" id="health-results-body">
+                  <div style="text-align:center;padding:2rem 1rem;color:var(--muted);font-size:.85rem">
+                    <div style="font-size:2.5rem;margin-bottom:.8rem">🏥</div>Upload patient data and set rules, then
+                    click <strong>Analyze & Predict</strong>.
+                  </div>
+                </div>
+              </div>
+              <div class="report-banner">
+                <div class="rb-t">Export Healthcare Results</div>
+                <div class="rb-s">Export patient triage results and doctor assignments</div>
+                <div class="rb-btns">
+                  <button class="rb-btn" onclick="exportExcel('Healthcare')">📥 Export Excel</button>
+                  <button class="rb-btn" onclick="exportPDF('Healthcare')">📄 PDF Report</button>
+                  <button class="rb-btn" onclick="showP('bias')">⚖️ Bias Analysis</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ HEALTH CLIENT NOTIFICATIONS ══════════ -->
+        <div class="panel" id="panel-health-client">
+          <div class="pg-head">
+            <div class="pg-tag">Healthcare</div>
+            <div class="pg-title">Patient Notifications</div>
+          </div>
+          <div class="card" style="margin-bottom:1.2rem">
+            <div class="card-h">
+              <div class="card-t">Patient Requests</div><button class="btn-sm-g"
+                onclick="runHealthAnalysis();showP('healthcare')">▶ Run AI Analysis</button>
+            </div>
+            <div class="tbl-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Patient ID</th>
+                    <th>Name</th>
+                    <th>Age</th>
+                    <th>Key Vitals</th>
+                    <th>Symptoms</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>#PAT-001</td>
+                    <td>Ramesh Kumar</td>
+                    <td>58</td>
+                    <td>SpO2: 86%, BP: 160/100</td>
+                    <td>Chest pain, Breathlessness</td>
+                    <td>+91-98765-01234</td>
+                    <td><span class="pill pill-red">Critical</span></td>
+                  </tr>
+                  <tr>
+                    <td>#PAT-002</td>
+                    <td>Meera Patel</td>
+                    <td>42</td>
+                    <td>Temp: 38.9°C, HR: 108</td>
+                    <td>High fever, Body ache</td>
+                    <td>+91-98765-05678</td>
+                    <td><span class="pill pill-amber">Risk</span></td>
+                  </tr>
+                  <tr>
+                    <td>#PAT-003</td>
+                    <td>Sunita Devi</td>
+                    <td>34</td>
+                    <td>Temp: 37.1°C, BP: 118/78</td>
+                    <td>Routine checkup</td>
+                    <td>+91-98765-09012</td>
+                    <td><span class="pill pill-green">Normal</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-h">
+              <div class="card-t">Patient Notification Preview</div>
+              <div class="card-sub">What patients see on their webpage after analysis</div>
+            </div>
+            <div class="card-body">
+              <div style="display:flex;flex-direction:column;gap:1rem">
+                <div class="user-notif-banner unb-rejected" style="border-color:rgba(231,76,60,.3)">
+                  <div class="unb-ic">🚨</div>
+                  <div>
+                    <div class="unb-title">Dear Ramesh Kumar — CRITICAL: Immediate Medical Attention Required</div>
+                    <div class="unb-body">Our AI health analysis has flagged your condition as
+                      <strong>CRITICAL</strong>. Please proceed to the Emergency Department immediately.
+                      <ul class="unb-reasons" style="margin-top:.6rem">
+                        <li><span class="ri ri-no">✗</span>SpO2 level is 86% — critically low (normal: 95%+). This
+                          indicates possible cardiac/respiratory emergency</li>
+                        <li><span class="ri ri-no">✗</span>Blood pressure 160/100 — Stage 2 hypertension requiring
+                          immediate attention</li>
+                        <li><span class="ri ri-warn">!</span>Chest pain and breathlessness are serious warning signs
+                        </li>
+                      </ul>
+                      <div
+                        style="background:rgba(231,76,60,.1);border:1px solid rgba(231,76,60,.2);border-radius:8px;padding:.8rem 1rem;margin-top:.8rem;font-size:.79rem;color:var(--red)">
+                        🏥 <strong>Doctor Assigned:</strong> Dr. Rajesh Arora (Senior Cardiologist, Apollo Hospital,
+                        Room 304)<br>
+                        📋 <strong>Action:</strong> Report to Emergency Reception immediately. Your case has been
+                        prioritized.
+                      </div>
+                      <div class="wa-notif wa-no" style="margin-top:.7rem">📱 WhatsApp: "URGENT — Dear Ramesh Kumar,
+                        your health analysis shows CRITICAL condition (SpO2: 86%). Please come to Apollo Hospital
+                        Emergency IMMEDIATELY. Dr. Arora is assigned. Call: 1800-XXX-XXXX"</div>
+                    </div>
+                  </div>
+                </div>
+                <div class="user-notif-banner unb-approved">
+                  <div class="unb-ic">✅</div>
+                  <div>
+                    <div class="unb-title">Dear Sunita Devi — Health Status: NORMAL</div>
+                    <div class="unb-body">Good news! Your health analysis shows all vitals are within normal range.
+                      <ul class="unb-reasons">
+                        <li><span class="ri ri-ok">✓</span>Temperature 37.1°C — Normal range</li>
+                        <li><span class="ri ri-ok">✓</span>Blood pressure 118/78 — Healthy</li>
+                        <li><span class="ri ri-ok">✓</span>All other vitals within normal parameters</li>
+                      </ul>
+                      <div class="next-steps">📋 <strong>Assigned:</strong> Dr. V. Nair (General Physician) for your
+                        routine checkup. Please report to OPD Room 102 at your scheduled time. Keep up the healthy
+                        habits!</div>
+                      <div class="wa-notif wa-ok" style="margin-top:.6rem">📱 WhatsApp: "Dear Sunita Devi, your health
+                        checkup results show NORMAL status at Apollo Hospital. Dr. V. Nair (GP) is assigned. OPD Room
+                        102. Keep up the healthy habits!"</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ BIAS ANALYTICS ══════════ -->
+        <div class="panel" id="panel-bias">
+          <div class="pg-head">
+            <div class="pg-tag">Bias Analytics</div>
+            <div class="pg-title">Old CSV vs New AI — Bias Comparison</div>
+          </div>
+          <div class="g3" style="margin-bottom:1.2rem">
+            <div class="card">
+              <div class="card-h">
+                <div class="card-t">Upload Old Dataset</div>
+              </div>
+              <div class="card-body">
+                <div class="upload-z" onclick="simulateUpload('bias-old')">
+                  <input type="file" accept=".csv">
+                  <div class="uz-ic">📂</div>
+                  <div class="uz-t">Old / Historical CSV</div>
+                  <p class="uz-s">Your previous decision dataset</p>
+                  <button class="btn-run btn-outline" style="max-width:130px;margin:0 auto"
+                    onclick="event.stopPropagation();simulateUpload('bias-old')">Choose Old CSV</button>
+                  <div class="uz-fn" id="bias-old-name">📄 old_decisions_2024.csv loaded</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h">
+                <div class="card-t">Upload New AI Results</div>
+              </div>
+              <div class="card-body">
+                <div class="upload-z" style="border-color:rgba(26,107,74,.3)" onclick="simulateUpload('bias-new')">
+                  <input type="file" accept=".csv">
+                  <div class="uz-ic">🤖</div>
+                  <div class="uz-t">New AI Result CSV</div>
+                  <p class="uz-s">Latest EquiMind AI output</p>
+                  <button class="btn-run btn-outline"
+                    style="max-width:130px;margin:0 auto;border-color:var(--green);color:var(--green)"
+                    onclick="event.stopPropagation();simulateUpload('bias-new')">Choose New CSV</button>
+                  <div class="uz-fn" id="bias-new-name">📄 equimind_results_2025.csv loaded</div>
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-h">
+                <div class="card-t">Select Industry</div>
+              </div>
+              <div class="card-body">
+                <div class="fi-full" style="margin-bottom:.8rem"><label>Industry to Compare</label>
+                  <select id="bias-industry">
+                    <option value="banking">🏦 Banking (Loan Decisions)</option>
+                    <option value="hr">👨‍💼 HR (Hiring)</option>
+                    <option value="healthcare">🏥 Healthcare (Patient Triage)</option>
+                    <option value="all">📊 All Industries Combined</option>
+                  </select>
+                </div>
+                <div class="fi-full"><label>Comparison Metric</label>
+                  <select>
+                    <option>Gender Bias</option>
+                    <option>Age Discrimination</option>
+                    <option>Income/Socioeconomic</option>
+                    <option>All Metrics</option>
+                  </select>
+                </div>
+                <button class="btn-run btn-green" style="margin-top:.9rem" onclick="runBiasCompare()">📊 Run Bias
+                  Comparison</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="bias-results" style="display:none;animation:pIn .4s both">
+            <div class="bias-panel" style="margin-bottom:1.2rem">
+              <div class="bias-card">
+                <div class="bias-title"><span style="font-size:1.1rem">📉</span><span class="bias-b">Before — Old Data
+                    (High Bias)</span></div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Gender Bias</span><span class="bbr-v"
+                      style="color:var(--red)">42%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-red" style="width:42%"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Age Discrimination (45-55)</span><span class="bbr-v"
+                      style="color:var(--red)">38%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-red" style="width:38%;animation-delay:.15s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Income/Socioeconomic Skew</span><span class="bbr-v"
+                      style="color:var(--red)">55%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-red" style="width:55%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Geographic/Location Bias</span><span class="bbr-v"
+                      style="color:var(--red)">29%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-red" style="width:29%;animation-delay:.45s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Approval Rate Parity</span><span class="bbr-v"
+                      style="color:var(--red)">61%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-red" style="width:61%;animation-delay:.6s"></div>
+                  </div>
+                </div>
+                <div class="bias-alert">⚠️ <div><strong>Detected:</strong> Age-based loan rejection disparity (group
+                    45–55), gender bias in HR selections (female candidates underscored), income-based healthcare
+                    prioritization.</div>
+                </div>
+              </div>
+              <div class="bias-card">
+                <div class="bias-title"><span style="font-size:1.1rem">📈</span><span class="bias-a">After — EquiMind AI
+                    (Bias Reduced)</span></div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Gender Bias</span><span class="bbr-v"
+                      style="color:var(--green)">4%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-green" style="width:4%"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Age Discrimination (45-55)</span><span class="bbr-v"
+                      style="color:var(--green)">6%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-green" style="width:6%;animation-delay:.15s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Income/Socioeconomic Skew</span><span class="bbr-v"
+                      style="color:var(--green)">11%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-green" style="width:11%;animation-delay:.3s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Geographic/Location Bias</span><span class="bbr-v"
+                      style="color:var(--green)">3%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-green" style="width:3%;animation-delay:.45s"></div>
+                  </div>
+                </div>
+                <div class="bbr">
+                  <div class="bbr-hd"><span class="bbr-l">Approval Rate Parity</span><span class="bbr-v"
+                      style="color:var(--green)">96%</span></div>
+                  <div class="bbr-tr">
+                    <div class="bbr-f bf-green" style="width:96%;animation-delay:.6s"></div>
+                  </div>
+                </div>
+                <div class="bias-summary">
+                  <div class="bs-val">↓ 87%</div>
+                  <div class="bs-lbl">Overall Bias Reduction by EquiMind AI</div>
+                </div>
+              </div>
+            </div>
+            <div class="g3">
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Fairness Scores by Industry</div>
+                </div>
+                <div class="card-body">
+                  <div class="gauge-row">
+                    <div class="gr mod-bank">
+                      <div class="gr-hd"><span class="gr-l">🏦 Banking</span><span class="gr-v">92/100</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:92%"></div>
+                      </div>
+                    </div>
+                    <div class="gr mod-hr">
+                      <div class="gr-hd"><span class="gr-l">👨‍💼 HR Hiring</span><span class="gr-v">88/100</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:88%;animation-delay:.2s"></div>
+                      </div>
+                    </div>
+                    <div class="gr mod-health">
+                      <div class="gr-hd"><span class="gr-l">🏥 Healthcare</span><span class="gr-v">95/100</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:95%;animation-delay:.4s"></div>
+                      </div>
+                    </div>
+                    <div class="gr">
+                      <div class="gr-hd"><span class="gr-l">Overall Platform</span><span class="gr-v">92/100</span>
+                      </div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:92%;animation-delay:.6s"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Bias Reduction by Category</div>
+                </div>
+                <div class="card-body">
+                  <div class="gauge-row">
+                    <div class="gr">
+                      <div class="gr-hd"><span class="gr-l">Gender Bias</span><span class="gr-v"
+                          style="color:var(--green)">↓ 90%</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:90%"></div>
+                      </div>
+                    </div>
+                    <div class="gr">
+                      <div class="gr-hd"><span class="gr-l">Age Discrimination</span><span class="gr-v"
+                          style="color:var(--green)">↓ 84%</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:84%;animation-delay:.2s"></div>
+                      </div>
+                    </div>
+                    <div class="gr">
+                      <div class="gr-hd"><span class="gr-l">Socioeconomic</span><span class="gr-v"
+                          style="color:var(--green)">↓ 80%</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:80%;animation-delay:.4s"></div>
+                      </div>
+                    </div>
+                    <div class="gr">
+                      <div class="gr-hd"><span class="gr-l">Location Bias</span><span class="gr-v"
+                          style="color:var(--green)">↓ 90%</span></div>
+                      <div class="gr-tr">
+                        <div class="gr-f" style="width:90%;animation-delay:.6s"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-h">
+                  <div class="card-t">Generate Report</div>
+                </div>
+                <div class="card-body" style="display:flex;flex-direction:column;gap:.8rem">
+                  <button class="btn-run btn-green" onclick="exportExcel('BiasReport')">📥 Export Excel Report</button>
+                  <button class="btn-run btn-ink" onclick="exportPDF('BiasReport')">📄 Export PDF Report</button>
+                  <button class="btn-run btn-blue"
+                    onclick="showToast('📊','Full bias analysis report generating...','info');setTimeout(()=>showToast('✅','Report ready! Check your downloads.','ok'),2200)">📊
+                    Full Analysis Report</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ HISTORY ══════════ -->
+        <div class="panel" id="panel-history">
+          <div class="pg-head">
+            <div class="pg-tag">Audit Trail</div>
+            <div class="pg-title">History — All Decisions</div>
+          </div>
+          <div class="hist-filter">
+            <button class="hf-btn act" id="hist-filter-all" onclick="filterHist('all',this)">All Modules</button>
+            <button class="hf-btn mod-bank" onclick="filterHist('banking',this)">🏦 Banking</button>
+            <button class="hf-btn mod-hr" onclick="filterHist('hr',this)">👨‍💼 HR</button>
+            <button class="hf-btn mod-health" onclick="filterHist('healthcare',this)">🏥 Healthcare</button>
+          </div>
+          <div class="card" style="margin-bottom:1.2rem">
+            <div class="card-h">
+              <div class="card-t">Decision Log</div>
+              <div style="display:flex;gap:.6rem">
+                <button class="btn-sm" onclick="exportExcel('History')">📥 Export Excel</button>
+                <button class="btn-sm" onclick="exportPDF('History')">📄 Export PDF</button>
+              </div>
+            </div>
+            <div class="tbl-wrap">
+              <table id="history-table">
+                <thead>
+                  <tr>
+                    <th>Date & Time</th>
+                    <th>Module</th>
+                    <th>Dataset</th>
+                    <th>Total</th>
+                    <th>Approved</th>
+                    <th>Rejected</th>
+                    <th>Flagged</th>
+                    <th>Fairness</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="hist-row banking mod-bank">
+                    <td>Apr 26, 2025 · 14:22</td>
+                    <td>🏦 Banking</td>
+                    <td>sbi_loans_apr26.csv</td>
+                    <td>248</td>
+                    <td><span class="pill pill-green">192 (77%)</span></td>
+                    <td><span class="pill pill-red">56 (23%)</span></td>
+                    <td><span class="pill pill-amber">4</span></td>
+                    <td><span style="color:var(--green);font-weight:700">94</span></td>
+                  </tr>
+                  <tr class="hist-row hr mod-hr">
+                    <td>Apr 26, 2025 · 11:05</td>
+                    <td>👨‍💼 HR</td>
+                    <td>tcs_candidates_apr26.csv</td>
+                    <td>12</td>
+                    <td><span class="pill pill-green">3 Selected</span></td>
+                    <td><span class="pill pill-red">9 Rejected</span></td>
+                    <td><span class="pill pill-amber">1</span></td>
+                    <td><span style="color:var(--green);font-weight:700">88</span></td>
+                  </tr>
+                  <tr class="hist-row healthcare mod-health">
+                    <td>Apr 25, 2025 · 16:40</td>
+                    <td>🏥 Healthcare</td>
+                    <td>apollo_patients_apr25.csv</td>
+                    <td>18</td>
+                    <td><span class="pill pill-green">12 Normal</span></td>
+                    <td><span class="pill pill-red">3 Critical</span></td>
+                    <td><span class="pill pill-amber">3 Risk</span></td>
+                    <td><span style="color:var(--green);font-weight:700">96</span></td>
+                  </tr>
+                  <tr class="hist-row banking mod-bank">
+                    <td>Apr 24, 2025 · 09:18</td>
+                    <td>🏦 Banking</td>
+                    <td>sbi_loans_apr24.csv</td>
+                    <td>302</td>
+                    <td><span class="pill pill-green">240 (79%)</span></td>
+                    <td><span class="pill pill-red">62 (21%)</span></td>
+                    <td><span class="pill pill-amber">6</span></td>
+                    <td><span style="color:var(--green);font-weight:700">91</span></td>
+                  </tr>
+                  <tr class="hist-row hr mod-hr">
+                    <td>Apr 23, 2025 · 13:55</td>
+                    <td>👨‍💼 HR</td>
+                    <td>tcs_hiring_apr23.csv</td>
+                    <td>28</td>
+                    <td><span class="pill pill-green">8 Selected</span></td>
+                    <td><span class="pill pill-red">20 Rejected</span></td>
+                    <td>0</td>
+                    <td><span style="color:var(--amber);font-weight:700">82</span></td>
+                  </tr>
+                  <tr class="hist-row healthcare mod-health">
+                    <td>Apr 22, 2025 · 08:30</td>
+                    <td>🏥 Healthcare</td>
+                    <td>apollo_patients_apr22.csv</td>
+                    <td>24</td>
+                    <td><span class="pill pill-green">16 Normal</span></td>
+                    <td><span class="pill pill-red">5 Critical</span></td>
+                    <td><span class="pill pill-amber">3 Risk</span></td>
+                    <td><span style="color:var(--green);font-weight:700">94</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- ══════════ NOTIFICATIONS ══════════ -->
+        <div class="panel" id="panel-notifications">
+          <div class="pg-head">
+            <div class="pg-tag">System</div>
+            <div class="pg-title">Notifications & Alerts</div>
+          </div>
+          <div class="notif-card nc-g">
+            <div class="nc-ic">✅</div>
+            <div style="flex:1">
+              <div class="nc-t">Loan Approved — Ravi Kumar</div>
+              <div class="nc-s">Banking module · Confidence 94% · WhatsApp sent to +91-98765-43210 · Ref #LN-2041</div>
+            </div>
+            <div class="nc-time">2 min ago</div>
+          </div>
+          <div class="notif-card nc-r">
+            <div class="nc-ic">❌</div>
+            <div style="flex:1">
+              <div class="nc-t">Loan Rejected — James Wilson</div>
+              <div class="nc-s">Banking · Credit score 580 below min 650 · WhatsApp rejection notice sent</div>
+            </div>
+            <div class="nc-time">8 min ago</div>
+          </div>
+          <div class="notif-card nc-a">
+            <div class="nc-ic">🚩</div>
+            <div style="flex:1">
+              <div class="nc-t">Flag Detected — Priya Mehta (Banking)</div>
+              <div class="nc-s">Borderline case · Income ₹26,000 (threshold ₹25,000) · Credit score 610 (req 650) ·
+                Auto-Solve available</div>
+            </div>
+            <div class="nc-time">12 min ago</div>
+          </div>
+          <div class="notif-card nc-b">
+            <div class="nc-ic">👨‍💼</div>
+            <div style="flex:1">
+              <div class="nc-t">HR Selection Complete — Data Analyst</div>
+              <div class="nc-s">3 candidates selected, 9 notified via WhatsApp · TCS · Ref #TCS-HR-041</div>
+            </div>
+            <div class="nc-time">25 min ago</div>
+          </div>
+          <div class="notif-card nc-r">
+            <div class="nc-ic">🚨</div>
+            <div style="flex:1">
+              <div class="nc-t">Critical Patient — Ramesh Kumar</div>
+              <div class="nc-s">Healthcare · SpO2 86% · Assigned to Dr. Arora (Cardiologist) · Family notified via
+                WhatsApp</div>
+            </div>
+            <div class="nc-time">1 hr ago</div>
+          </div>
+          <div class="notif-card nc-a">
+            <div class="nc-ic">⚠️</div>
+            <div style="flex:1">
+              <div class="nc-t">Bias Alert — Age Group Disparity Detected</div>
+              <div class="nc-s">Banking module · Group 45–55 shows 18% higher rejection rate than other groups · Review
+                required</div>
+            </div>
+            <div class="nc-time">2 hr ago</div>
+          </div>
+          <div class="notif-card nc-g">
+            <div class="nc-ic">📊</div>
+            <div style="flex:1">
+              <div class="nc-t">Bias Analysis Complete — 87% Reduction</div>
+              <div class="nc-s">Old CSV vs EquiMind AI results compared · Overall fairness score: 92/100</div>
+            </div>
+            <div class="nc-time">3 hr ago</div>
+          </div>
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /main -->
+  </div><!-- /dashboard -->
+
+  <script>
+    // ═══════════════════════════════════════════════
+    //  STATE
+    // ═══════════════════════════════════════════════
+    let APP = {
+      user: { name: 'Admin', org: 'SBI Bank', type: 'bank' },
+      pendingPanel: null,
+      bankRulesSaved: false,
+      hrRulesSaved: false,
+      healthRulesSaved: false,
+      bankAnalyzed: false,
+      hrAnalyzed: false,
+      healthAnalyzed: false
+    };
+
+    // ═══════════════════════════════════════════════
+    //  TOAST
+    // ═══════════════════════════════════════════════
+    function showToast(icon, msg, type = 'ok') {
+      const t = document.getElementById('toast');
+      document.getElementById('t-ic').textContent = icon;
+      document.getElementById('t-msg').textContent = msg;
+      t.className = `toast t-${type} show`;
+      clearTimeout(t._tid);
+      t._tid = setTimeout(() => t.classList.remove('show'), 4200);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  LANDING / NAV
+    // ═══════════════════════════════════════════════
+    window.addEventListener('scroll', () => {
+      document.getElementById('lnav')?.classList.toggle('scrolled', scrollY > 40);
+    });
+
+    // ═══════════════════════════════════════════════
+    //  LOGIN / LOGOUT
+    // ═══════════════════════════════════════════════
+    let _pendingPanel = null;
+
+    function openLogin() { document.getElementById('modal').classList.add('open'); }
+    function closeLogin() { document.getElementById('modal').classList.remove('open'); }
+    document.getElementById('modal').addEventListener('click', e => { if (e.target === document.getElementById('modal')) closeLogin(); });
+
+    function loginTo(panel) {
+      _pendingPanel = panel;
+      // Auto-select type in modal
+      const typeMap = { 'banking': 'bank', 'hr': 'hr', 'healthcare': 'hospital' };
+      const typeSelect = document.getElementById('ln-type');
+      if (typeSelect && typeMap[panel]) typeSelect.value = typeMap[panel];
+
+      openLogin();
+    }
+
+    function doLogin() {
+      const name = document.getElementById('ln-name').value.trim() || 'Admin';
+      const org = document.getElementById('ln-org').value.trim() || 'SBI Bank';
+      const type = document.getElementById('ln-type').value || 'bank';
+      APP.user = { name, org, type };
+      closeLogin();
+      showDashboard();
+      if (_pendingPanel) { setTimeout(() => showP(_pendingPanel), 500); _pendingPanel = null; }
+    }
+
+    function showDashboard() {
+      document.getElementById('pg-landing').classList.remove('active');
+      document.getElementById('pg-dashboard').classList.add('active');
+      const init = document.getElementById('pg-dashboard');
+      init.style.display = 'flex';
+      document.getElementById('sb-av').textContent = APP.user.name.charAt(0).toUpperCase();
+      document.getElementById('sb-uname').textContent = APP.user.name;
+
+      const map = { bank: 'Banking', hr: 'HR', hospital: 'Healthcare' };
+      document.getElementById('sb-urole').textContent = (map[APP.user.type] || 'Banking') + ' · ' + APP.user.org;
+      document.getElementById('tb-org').textContent = APP.user.org;
+
+      // Filter Sidebar based on user type
+      filterSidebar(APP.user.type);
+
+      showP('overview');
+      showToast('🎉', 'Welcome back! Dashboard loaded.', 'ok');
+    }
+
+    function filterSidebar(type) {
+      // Filter sidebar items
+      const items = document.querySelectorAll('.sb-item');
+      items.forEach(item => {
+        const isCommon = item.textContent.includes('Dashboard') ||
+          item.textContent.includes('Bias') ||
+          item.textContent.includes('History') ||
+          item.textContent.includes('Notifications');
+
+        if (isCommon) {
+          item.style.display = 'flex';
+          return;
+        }
+
+        if (type === 'bank') {
+          item.style.display = item.classList.contains('mod-bank') ? 'flex' : 'none';
+        } else if (type === 'hr') {
+          item.style.display = item.classList.contains('mod-hr') ? 'flex' : 'none';
+        } else if (type === 'hospital') {
+          item.style.display = item.classList.contains('mod-health') ? 'flex' : 'none';
+        } else {
+          item.style.display = 'flex';
+        }
+      });
+
+      // Filter Overview table rows & Bias gauge rows & History rows
+      const genericItems = document.querySelectorAll('.mod-bank, .mod-hr, .mod-health');
+      genericItems.forEach(el => {
+        if (type === 'bank') el.style.display = el.classList.contains('mod-bank') ? '' : 'none';
+        else if (type === 'hr') el.style.display = el.classList.contains('mod-hr') ? '' : 'none';
+        else if (type === 'hospital') el.style.display = el.classList.contains('mod-health') ? '' : 'none';
+        else el.style.display = '';
+      });
+
+      // Hide irrelevant History filters
+      const histFilters = document.querySelectorAll('.hist-filter .hf-btn');
+      histFilters.forEach(btn => {
+        if (type === 'admin') {
+          btn.style.display = 'inline-block';
+        } else if (btn.id === 'hist-filter-all') {
+          btn.style.display = 'none';
+        } else {
+          const isMyType = (type === 'bank' && btn.classList.contains('mod-bank')) ||
+            (type === 'hr' && btn.classList.contains('mod-hr')) ||
+            (type === 'hospital' && btn.classList.contains('mod-health'));
+          btn.style.display = isMyType ? 'inline-block' : 'none';
+          if (isMyType) btn.classList.add('act'); else btn.classList.remove('act');
+        }
+      });
+
+      // Hide module header if in specific mode
+      const modHeader = document.querySelector('.sb-sec:nth-of-type(2)');
+      if (modHeader && type !== 'admin') modHeader.textContent = 'Active Module';
+    }
+
+    function doLogout() {
+      document.getElementById('pg-dashboard').classList.remove('active');
+      document.getElementById('pg-dashboard').style.display = 'none';
+      document.getElementById('pg-landing').classList.add('active');
+      showToast('👋', 'Logged out successfully', 'info');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  PANEL NAVIGATION
+    // ═══════════════════════════════════════════════
+    const PANEL_TITLES = {
+      overview: 'Dashboard Overview', banking: 'Banking · Loan Decisions',
+      'bank-client': 'Bank · Client Requests', hr: 'HR · Smart Hiring',
+      'hr-client': 'HR · Candidate Notifications', healthcare: 'Healthcare · Patient Triage',
+      'health-client': 'Healthcare · Patient Notifications',
+      bias: 'Bias Analytics · CSV Comparison', history: 'History & Audit Trail',
+      notifications: 'Notifications & Alerts'
+    };
+
+    function showP(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('act'));
+      document.querySelectorAll('.sb-item').forEach(i => i.classList.remove('act'));
+      const p = document.getElementById('panel-' + id);
+      if (p) p.classList.add('act');
+      document.getElementById('tb-title').textContent = PANEL_TITLES[id] || 'Dashboard';
+      // Highlight sidebar
+      const map = { overview: 0, banking: 1, 'bank-client': 2, hr: 3, 'hr-client': 4, healthcare: 5, 'health-client': 6, bias: 7, history: 8, notifications: 9 };
+      const items = document.querySelectorAll('.sb-item');
+      if (items[map[id]]) items[map[id]].classList.add('act');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  TABS
+    // ═══════════════════════════════════════════════
+    function switchTab(mod, tab) {
+      ['form', 'prompt'].forEach(t => {
+        const btn = document.getElementById(`${mod}-tab-${t}`);
+        const el = document.getElementById(`${mod}-${t}-area`);
+        if (btn) btn.classList.toggle('act', t === tab);
+        if (el) el.style.display = t === tab ? 'block' : 'none';
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  FILE UPLOAD SIMULATION
+    // ═══════════════════════════════════════════════
+    const FILE_LABELS = {
+      bank: '📄 sbi_loans_dataset.csv — 248 records loaded',
+      hr: '📄 tcs_candidates.csv — 12 applicants loaded',
+      health: '📄 apollo_patients.csv — 18 patients loaded',
+      'bias-old': '📄 old_decisions_2024.csv loaded',
+      'bias-new': '📄 equimind_results_2025.csv loaded'
+    };
+
+    function simulateUpload(mod) {
+      showToast('📂', 'File selected & uploading...', 'info');
+      setTimeout(() => {
+        const el = document.getElementById(`${mod}-file-name`);
+        if (el) { el.style.display = 'block'; el.textContent = FILE_LABELS[mod] || 'File loaded'; }
+        showToast('✅', FILE_LABELS[mod] || 'File uploaded!', 'ok');
+      }, 900);
+    }
+
+    function handleFile(inp, mod) {
+      if (inp.files.length) {
+        setTimeout(() => {
+          const el = document.getElementById(`${mod}-file-name`);
+          if (el) { el.style.display = 'block'; el.textContent = '📄 ' + inp.files[0].name + ' — Loaded'; }
+          showToast('✅', inp.files[0].name + ' uploaded!', 'ok');
+        }, 400);
+      }
+    }
+
+    // ═══════════════════════════════════════════════
+    //  SAVE RULES
+    // ═══════════════════════════════════════════════
+    function saveRules(mod) {
+      const badge = document.getElementById(`${mod}-rules-saved`);
+      if (badge) { badge.classList.add('show'); APP[mod + 'RulesSaved'] = true; }
+      showToast('💾', 'Rules saved successfully!', 'ok');
+    }
+
+    function editRules(mod) {
+      const badge = document.getElementById(`${mod}-rules-saved`);
+      if (badge) badge.classList.remove('show');
+      showToast('✏️', 'Rules unlocked for editing.', 'info');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  BANKING AI ANALYSIS
+    // ═══════════════════════════════════════════════
+    function runBankAnalysis() {
+      showToast('🤖', 'AI analyzing loan applications...', 'info');
+      document.getElementById('bank-status-pill').className = 'pill pill-blue';
+      document.getElementById('bank-status-pill').textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        APP.bankAnalyzed = true;
+        document.getElementById('bank-status-pill').className = 'pill pill-green';
+        document.getElementById('bank-status-pill').textContent = '✓ Analysis Complete';
+
+        const body = document.getElementById('bank-results-body');
+        body.innerHTML = `
+      <!-- APPROVED -->
+      <div class="result-box approved show">
+        <div class="res-head">
+          <div class="res-ic res-ic-ok">✅</div>
+          <div><div class="res-title">LOAN APPROVED — Ravi Kumar</div><div class="res-sub">Ref #LN-2041 · Amount ₹3,50,000 · SBI Bank</div></div>
+        </div>
+        <div class="conf-bar">
+          <div class="conf-hd"><span class="conf-lbl">AI Confidence Score</span><span class="conf-val">94%</span></div>
+          <div class="conf-tr"><div class="conf-fi conf-green" style="width:94%"></div></div>
+        </div>
+        <ul class="reason-list">
+          <li><span class="ri ri-ok">✓</span>Income ₹45,000/mo exceeds minimum threshold of ₹25,000 by 80%</li>
+          <li><span class="ri ri-ok">✓</span>Credit score 740 rated Excellent (minimum required: 650)</li>
+          <li><span class="ri ri-ok">✓</span>Stable salaried employment for 4+ years — highly reliable</li>
+          <li><span class="ri ri-ok">✓</span>No existing loan defaults found in credit history</li>
+          <li><span class="ri ri-ok">✓</span>Loan-to-income ratio 6.5x is within acceptable 10x limit</li>
+        </ul>
+        <div class="next-steps">📋 <strong>Next Steps for Ravi Kumar:</strong><br>1. Bank relationship manager will call within 24 hours<br>2. Keep documents ready: Aadhaar, PAN, 3 months salary slips, bank statement<br>3. Loan disbursement within 3-5 working days after verification</div>
+        <button class="wa-btn wa-green" onclick="showWhatsApp('approved')">📱 View WhatsApp Message</button>
+      </div>
+
+      <!-- REJECTED -->
+      <div class="result-box rejected show" style="margin-top:.9rem">
+        <div class="res-head">
+          <div class="res-ic res-ic-no">❌</div>
+          <div><div class="res-title">LOAN REJECTED — James Wilson</div><div class="res-sub">Ref #LN-2042 · Amount ₹5,00,000 · SBI Bank</div></div>
+        </div>
+        <div class="conf-bar">
+          <div class="conf-hd"><span class="conf-lbl">AI Confidence Score</span><span class="conf-val conf-val" style="color:var(--red)">91%</span></div>
+          <div class="conf-tr"><div class="conf-fi conf-red" style="width:91%"></div></div>
+        </div>
+        <ul class="reason-list">
+          <li><span class="ri ri-no">✗</span>Credit score 580 is below minimum required 650 (gap: 70 points)</li>
+          <li><span class="ri ri-no">✗</span>1 existing loan default detected — high risk indicator</li>
+          <li><span class="ri ri-ok">✓</span>Income ₹28,000/mo meets threshold of ₹25,000</li>
+          <li><span class="ri ri-no">✗</span>Loan-to-income ratio 17.8x exceeds safe limit of 10x</li>
+        </ul>
+        <div class="improve-box">💡 <strong>How James Wilson can improve for future approval:</strong><br>
+        1. <strong>Clear existing default</strong> — this alone can boost credit score by 60-80 pts<br>
+        2. Pay all bills/EMIs on time for 6 consecutive months<br>
+        3. Keep credit card utilization below 30%<br>
+        4. <strong>Reduce loan amount to ₹2,00,000</strong> — income supports this safely<br>
+        5. Reapply after 6 months of improved credit history<br>
+        <em style="color:var(--green);margin-top:.4rem;display:block">📅 Estimated eligibility: Oct 2025 (if steps above are followed)</em></div>
+        <button class="wa-btn wa-red" onclick="showWhatsApp('rejected')">📱 View WhatsApp Message</button>
+      </div>
+
+      <!-- FLAGGED -->
+      <div class="result-box flagged show" style="margin-top:.9rem">
+        <div class="res-head">
+          <div class="res-ic res-ic-flag">🚩</div>
+          <div><div class="res-title">FLAGGED — Priya Mehta</div><div class="res-sub">Ref #LN-2043 · Amount ₹2,00,000 · Borderline Case</div></div>
+        </div>
+        <div class="conf-bar">
+          <div class="conf-hd"><span class="conf-lbl">AI Confidence Score</span><span class="conf-val" style="color:var(--amber)">68%</span></div>
+          <div class="conf-tr"><div class="conf-fi" style="width:68%;background:linear-gradient(90deg,var(--amber),#f5c842)"></div></div>
+        </div>
+        <ul class="reason-list">
+          <li><span class="ri ri-warn">!</span>Income ₹26,000 (threshold ₹25,000) — borderline, minimal buffer</li>
+          <li><span class="ri ri-warn">!</span>Credit score 625 (required 650) — close but below threshold</li>
+          <li><span class="ri ri-ok">✓</span>No loan defaults · stable employment 2 years</li>
+        </ul>
+        <div class="flag-box">
+          ⚠️ <strong>Flag Reason:</strong> Borderline case — income and credit score are close to thresholds. Manual review recommended before decision.
+          <div style="margin-top:.6rem">
+            <button class="autosolve-btn" onclick="autoSolveFlag(this)">⚡ Auto-Solve Flag</button>
+            <div class="solved-msg" style="display:none">✅ Auto-Solve Applied: Case escalated to senior manager with AI recommendation of CONDITIONAL APPROVAL pending additional income proof submission.</div>
+          </div>
+        </div>
+        <button class="wa-btn wa-amber" onclick="showWhatsApp('flagged')">📱 View WhatsApp Message</button>
+      </div>`;
+
+        showToast('✅', 'Analysis complete! 3 decisions + WhatsApp sent to all clients', 'ok');
+        // Update bank requests table
+        updateReqTable();
+      }, 2000);
+    }
+
+    function autoSolveFlag(btn) {
+      btn.style.display = 'none';
+      btn.nextElementSibling.style.display = 'block';
+      showToast('⚡', 'Flag auto-resolved! Case escalated to senior manager.', 'ok');
+    }
+
+    function updateReqTable() {
+      const rows = document.querySelectorAll('#bank-req-table tr');
+      if (rows[0]) rows[0].cells[6].innerHTML = '<span class="pill pill-green req-analyzed">✓ Approved</span>';
+      rows[0] && (rows[0].cells[7].innerHTML = '<span style="color:var(--green);font-size:.74rem">📱 WhatsApp Sent</span>');
+      if (rows[1]) rows[1].cells[6].innerHTML = '<span class="pill pill-red">✗ Rejected</span>';
+      rows[1] && (rows[1].cells[7].innerHTML = '<span style="color:var(--red);font-size:.74rem">📱 WhatsApp Sent</span>');
+      if (rows[2]) rows[2].cells[6].innerHTML = '<span class="pill pill-amber">🚩 Flagged</span>';
+      rows[2] && (rows[2].cells[7].innerHTML = '<span style="color:var(--amber);font-size:.74rem">📱 WhatsApp Sent</span>');
+      if (rows[3]) rows[3].cells[6].innerHTML = '<span class="pill pill-green req-analyzed">✓ Approved</span>';
+      rows[3] && (rows[3].cells[7].innerHTML = '<span style="color:var(--green);font-size:.74rem">📱 WhatsApp Sent</span>');
+    }
+
+    // ═══════════════════════════════════════════════
+    //  HR AI ANALYSIS
+    // ═══════════════════════════════════════════════
+    function runHRAnalysis() {
+      showToast('🤖', 'AI ranking candidates...', 'info');
+      document.getElementById('hr-status-pill').className = 'pill pill-blue';
+      document.getElementById('hr-status-pill').textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        APP.hrAnalyzed = true;
+        document.getElementById('hr-status-pill').className = 'pill pill-green';
+        document.getElementById('hr-status-pill').textContent = '✓ Ranking Complete';
+        const role = document.getElementById('hr-role')?.value || 'Data Analyst';
+
+        document.getElementById('hr-results-body').innerHTML = `
+      <div style="margin-bottom:.8rem;font-size:.8rem;color:var(--muted)">Role: <strong style="color:var(--ink)">${role}</strong> · 12 applicants analyzed · Top 3 selected</div>
+      <div class="cand-card best">
+        <div class="cand-rank"><span class="pill pill-green">🥇 Best Fit</span></div>
+        <div class="cand-name">Priya Sharma</div>
+        <div class="cand-meta">Score: 94% · 3 yrs experience · Python, SQL, Tableau · Communication: 92/100</div>
+        <div class="cand-why" style="color:var(--green)">✅ <strong>Selected — Rank 1:</strong> Highest overall score, all required skills present, excellent communication, exceeds experience requirement. Perfect fit for ${role} role.</div>
+        <div class="conf-bar" style="margin:.8rem 0 .4rem"><div class="conf-tr"><div class="conf-fi conf-green" style="width:94%"></div></div></div>
+        <div class="wa-notif wa-ok" style="margin-top:.5rem">📱 WhatsApp: "🎊 Congratulations Priya Sharma! You have been SELECTED for ${role} at TCS. Our HR team will contact you within 2 working days. Ref: #TCS-2041"</div>
+      </div>
+      <div class="cand-card">
+        <div class="cand-rank"><span class="pill pill-blue">🥈 Rank 2</span></div>
+        <div class="cand-name">Rahul Verma</div>
+        <div class="cand-meta">Score: 87% · 2.5 yrs · Python, SQL · Communication: 85/100</div>
+        <div class="cand-why" style="color:var(--blue)">✅ <strong>Selected — Rank 2:</strong> Good technical skills, meets all minimum requirements. Slightly less visualization experience but strong overall profile.</div>
+        <div class="conf-bar" style="margin:.8rem 0 .4rem"><div class="conf-tr"><div class="conf-fi" style="width:87%;background:var(--blue)"></div></div></div>
+        <div class="wa-notif wa-ok" style="margin-top:.5rem">📱 WhatsApp: "🎉 Congratulations Rahul Verma! Selected for ${role} at TCS. HR will contact you in 2 business days. Ref: #TCS-2042"</div>
+      </div>
+      <div class="cand-card">
+        <div class="cand-rank"><span class="pill pill-amber">🥉 Rank 3</span></div>
+        <div class="cand-name">Sneha Iyer</div>
+        <div class="cand-meta">Score: 81% · 2 yrs · Python, R · Communication: 80/100</div>
+        <div class="cand-why" style="color:#8a6000">✅ <strong>Selected — Rank 3:</strong> Meets base criteria. Good Python skills. SQL knowledge can be developed. Strong academic background compensates experience gap.</div>
+        <div class="conf-bar" style="margin:.8rem 0 .4rem"><div class="conf-tr"><div class="conf-fi" style="width:81%;background:var(--amber)"></div></div></div>
+        <div class="wa-notif wa-ok" style="margin-top:.5rem">📱 WhatsApp: "🎉 Congratulations Sneha Iyer! You've been shortlisted for ${role} at TCS. HR will reach you within 2 days. Ref: #TCS-2043"</div>
+      </div>
+      <div class="cand-card" style="border-left:3px solid var(--red)">
+        <div class="cand-rank"><span class="pill pill-red">✗ Not Selected</span></div>
+        <div class="cand-name">Arjun Das</div>
+        <div class="cand-meta">Score: 62% · 1 yr · Python only · Communication: 70/100</div>
+        <div class="cand-why" style="color:var(--red)">❌ <strong>Rejected:</strong> Score below 70% threshold, only 1 year experience (min 2), missing SQL skills, communication below avg.</div>
+        <div class="improve-box">💡 <strong>Improvement Tips for Arjun Das:</strong><br>
+        1. Get SQL certification (PostgreSQL/MySQL) — 2-3 months — can boost score by ~15pts<br>
+        2. Build 2 data analysis portfolio projects on GitHub showcasing Python + SQL<br>
+        3. Complete 1 more year of hands-on experience<br>
+        4. Practice communication through mock interviews<br>
+        <em style="color:var(--green);display:block;margin-top:.4rem">🌟 Reapply after 12 months — TCS encourages your growth!</em></div>
+        <div class="wa-notif wa-no" style="margin-top:.5rem">📱 WhatsApp: "Dear Arjun Das, your TCS application for ${role} was not shortlisted. Main gaps: SQL skills & experience. Detailed improvement tips emailed. Keep growing! — TCS HR"</div>
+      </div>`;
+
+        showToast('✅', 'Candidates ranked! WhatsApp notifications sent to all 12 applicants', 'ok');
+      }, 2000);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  HEALTHCARE AI ANALYSIS
+    // ═══════════════════════════════════════════════
+    function runHealthAnalysis() {
+      showToast('🤖', 'Analyzing patient data & predicting conditions...', 'info');
+      document.getElementById('health-status-pill').className = 'pill pill-blue';
+      document.getElementById('health-status-pill').textContent = 'Analyzing...';
+
+      setTimeout(() => {
+        APP.healthAnalyzed = true;
+        document.getElementById('health-status-pill').className = 'pill pill-green';
+        document.getElementById('health-status-pill').textContent = '✓ Triage Complete';
+
+        document.getElementById('health-results-body').innerHTML = `
+      <div style="margin-bottom:.9rem;font-size:.8rem;color:var(--muted)">18 patients analyzed · 3 Critical · 4 Risk · 11 Normal · All assigned to doctors</div>
+      <div style="overflow-x:auto">
+        <table>
+          <thead><tr><th>Patient Name</th><th>Age</th><th>Key Vitals</th><th>Problem Identified</th><th>Severity</th><th>Assigned Doctor</th><th>Notification</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><strong>Ramesh Kumar</strong></td><td>58</td>
+              <td style="font-size:.74rem">SpO2: 86%<br>BP: 160/100</td>
+              <td style="font-size:.74rem">Cardiac Emergency — Severely low oxygen saturation with hypertension and chest pain</td>
+              <td><span class="pt-sev pt-crit">🚨 CRITICAL</span></td>
+              <td style="font-size:.74rem"><strong>Dr. Rajesh Arora</strong><br>Cardiologist · Room 304</td>
+              <td><span class="pill pill-red" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+            <tr>
+              <td><strong>Meera Patel</strong></td><td>42</td>
+              <td style="font-size:.74rem">Temp: 38.9°C<br>HR: 108 bpm</td>
+              <td style="font-size:.74rem">High Fever with elevated heart rate — possible viral infection</td>
+              <td><span class="pt-sev pt-risk">⚠️ RISK</span></td>
+              <td style="font-size:.74rem"><strong>Dr. Suresh Iyer</strong><br>General Physician · OPD 205</td>
+              <td><span class="pill pill-amber" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+            <tr>
+              <td><strong>Arun Sharma</strong></td><td>67</td>
+              <td style="font-size:.74rem">Glucose: 280<br>BP: 145/90</td>
+              <td style="font-size:.74rem">Uncontrolled Diabetes with hypertension — requires specialist intervention</td>
+              <td><span class="pt-sev pt-risk">⚠️ RISK</span></td>
+              <td style="font-size:.74rem"><strong>Dr. Anjali Mehta</strong><br>Endocrinologist · OPD 308</td>
+              <td><span class="pill pill-amber" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+            <tr>
+              <td><strong>Sunita Devi</strong></td><td>34</td>
+              <td style="font-size:.74rem">Temp: 37.1°C<br>BP: 118/78</td>
+              <td style="font-size:.74rem">All vitals within normal range — routine preventive checkup</td>
+              <td><span class="pt-sev pt-norm">✅ NORMAL</span></td>
+              <td style="font-size:.74rem"><strong>Dr. V. Nair</strong><br>General Doctor · OPD 102</td>
+              <td><span class="pill pill-green" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+            <tr>
+              <td><strong>Kartik Joshi</strong></td><td>72</td>
+              <td style="font-size:.74rem">SpO2: 88%<br>HR: 125 bpm</td>
+              <td style="font-size:.74rem">EMERGENCY — Critically low SpO2 with very high heart rate, possible acute respiratory failure</td>
+              <td><span class="pt-sev pt-emer">🆘 EMERGENCY</span></td>
+              <td style="font-size:.74rem"><strong>Dr. Priya Nair</strong><br>Pulmonologist · ICU</td>
+              <td><span class="pill pill-red" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+            <tr>
+              <td><strong>Deepa Krishnan</strong></td><td>28</td>
+              <td style="font-size:.74rem">Temp: 36.8°C<br>BP: 115/75</td>
+              <td style="font-size:.74rem">Normal vitals — minor digestive complaint, no serious concern</td>
+              <td><span class="pt-sev pt-norm">✅ NORMAL</span></td>
+              <td style="font-size:.74rem"><strong>Dr. V. Nair</strong><br>General Doctor · OPD 102</td>
+              <td><span class="pill pill-green" style="font-size:.7rem">📱 Sent</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-top:1rem">
+        <div style="background:var(--red-bg);border:1px solid rgba(231,76,60,.2);border-radius:9px;padding:.8rem;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--red)">2</div><div style="font-size:.7rem;color:var(--red)">Critical</div></div>
+        <div style="background:rgba(155,0,0,.08);border:1px solid rgba(155,0,0,.15);border-radius:9px;padding:.8rem;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#900">1</div><div style="font-size:.7rem;color:#900">Emergency</div></div>
+        <div style="background:var(--amber-bg);border:1px solid rgba(232,184,75,.25);border-radius:9px;padding:.8rem;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:#8a6000">2</div><div style="font-size:.7rem;color:#8a6000">Risk</div></div>
+        <div style="background:var(--green-bg);border:1px solid rgba(26,107,74,.2);border-radius:9px;padding:.8rem;text-align:center"><div style="font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--green)">13</div><div style="font-size:.7rem;color:var(--green)">Normal</div></div>
+      </div>`;
+
+        showToast('✅', '18 patients triaged! All assigned to doctors. WhatsApp sent to patients & families', 'ok');
+      }, 2200);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  BIAS COMPARISON
+    // ═══════════════════════════════════════════════
+    function runBiasCompare() {
+      showToast('📊', 'Comparing datasets for bias...', 'info');
+      setTimeout(() => {
+        document.getElementById('bias-results').style.display = 'block';
+        showToast('✅', 'Bias comparison complete! 87% reduction detected by EquiMind AI', 'ok');
+      }, 2000);
+    }
+
+    // ═══════════════════════════════════════════════
+    //  CHATBOTS
+    // ═══════════════════════════════════════════════
+    const CHAT_RESPONSES = {
+      bank: {
+        default: "I can help with loan analysis. Try: 'Why was Ravi approved?', 'Show rejection reasons', or 'What is the approval rate?'",
+        ravi: "✅ Ravi Kumar was APPROVED because: Credit score 740 (excellent), income ₹45,000/mo (80% above threshold), 4+ years stable employment, zero loan defaults. Confidence: 94%.",
+        james: "❌ James Wilson was REJECTED because: Credit score 580 below minimum 650 (gap: 70pts), 1 existing loan default found. Income meets threshold. Suggest clearing default and reapplying in 6 months.",
+        flag: "🚩 Flagged cases are borderline applications where AI confidence is below 75%. They can be Auto-Solved (escalated to senior manager) or manually reviewed by a loan officer.",
+        rate: "📊 Current analysis: 77% approval rate (192/248), 23% rejection (56/248). 4 cases flagged for review. Fairness score: 94/100.",
+        approve: "Loan is approved when: credit score ≥ 650, income ≥ ₹25,000/mo, no existing defaults, loan-to-income ratio ≤ 10x, employment ≥ 1 year.",
+        reject: "Loan is rejected when: credit score < 500, OR existing defaults found, OR loan amount > 10x monthly income, OR income < ₹25,000/mo."
+      },
+      hr: {
+        default: "Hi! I help with hiring decisions. Try: 'Give best candidate for Data Analyst', 'Why was Arjun rejected?', 'Compare top candidates'",
+        best: "🥇 Best candidate for Data Analyst is PRIYA SHARMA — Score: 94%, 3 years exp, Python+SQL+Tableau skills, Communication: 92/100. She was automatically selected as Rank 1.",
+        arjun: "❌ Arjun Das was NOT selected: Score 62% (below 70% threshold), only 1yr experience (min 2), missing SQL skills. Improvement tips: Get SQL certification, build portfolio projects, reapply in 12 months.",
+        rank: "📋 Current rankings: 🥇 Priya Sharma (94%) · 🥈 Rahul Verma (87%) · 🥉 Sneha Iyer (81%) · ❌ Arjun Das (62% - Not selected)",
+        compare: "Top 2 comparison — Priya Sharma vs Rahul Verma: Priya leads in score (+7%), experience (+6mo), skills (3 vs 2), communication (+7pts). Both selected. Priya is Rank 1.",
+        improve: "Improvement tips for rejected candidates: 1. SQL certification 2. Data analysis portfolio on GitHub 3. Practice communication skills 4. Gain 1+ more years hands-on experience"
+      },
+      health: {
+        default: "Hello! Medical assistant here. Ask about patient conditions, severity, or doctor assignments.",
+        critical: "🚨 Critical patients: Ramesh Kumar (SpO2 86%, BP 160/100) → Dr. Arora (Cardiologist), Kartik Joshi (SpO2 88%, HR 125) → Dr. Priya Nair (Pulmonologist, ICU). Both notified.",
+        ramesh: "Patient Ramesh Kumar (58M): SpO2 critically low at 86% (normal: 95%+), BP 160/100 (Stage 2 hypertension), chest pain. CRITICAL → Assigned to Dr. Rajesh Arora (Cardiologist, Room 304).",
+        assign: "Doctor assignment logic: SpO2 < 90% or Chest pain → Cardiologist. Glucose > 300 → Endocrinologist. Temp > 39°C or HR > 120 → Emergency/ICU. Fever 38-39°C → General Physician. Normal vitals → General Doctor.",
+        normal: "✅ Normal patients today: Sunita Devi (all vitals normal) and Deepa Krishnan. Both assigned to Dr. V. Nair (General Doctor, OPD 102) for routine consultation.",
+        emergency: "🆘 Emergency case: Kartik Joshi (72M) — SpO2 88%, HR 125 bpm. Acute respiratory failure suspected. Admitted to ICU under Dr. Priya Nair (Pulmonologist). Family notified via WhatsApp."
+      }
+    };
+
+    function sendChat(mod) {
+      const inp = document.getElementById(`${mod}-chat-inp`);
+      const val = inp.value.trim();
+      if (!val) return;
+      addMsg(`${mod}-chat`, val, 'user');
+      inp.value = '';
+      setTimeout(() => {
+        const v = val.toLowerCase();
+        const R = CHAT_RESPONSES[mod];
+        let resp = R.default;
+        if (mod === 'bank') {
+          if (v.includes('ravi') || v.includes('approv')) resp = R.ravi;
+          else if (v.includes('james') || v.includes('reject')) resp = R.james;
+          else if (v.includes('flag')) resp = R.flag;
+          else if (v.includes('rate') || v.includes('stat')) resp = R.rate;
+          else if (v.includes('criteria') || v.includes('require')) resp = v.includes('reject') ? R.reject : R.approve;
+        } else if (mod === 'hr') {
+          if (v.includes('best') || v.includes('analyst') || v.includes('priya')) resp = R.best;
+          else if (v.includes('arjun') || v.includes('reject')) resp = R.arjun;
+          else if (v.includes('rank') || v.includes('list')) resp = R.rank;
+          else if (v.includes('compar')) resp = R.compare;
+          else if (v.includes('improv') || v.includes('tip')) resp = R.improve;
+        } else if (mod === 'health') {
+          if (v.includes('critical') || v.includes('danger')) resp = R.critical;
+          else if (v.includes('ramesh')) resp = R.ramesh;
+          else if (v.includes('assign') || v.includes('doctor')) resp = R.assign;
+          else if (v.includes('normal')) resp = R.normal;
+          else if (v.includes('emergency') || v.includes('kartik')) resp = R.emergency;
+        }
+        addMsg(`${mod}-chat`, resp, 'bot');
+      }, 700);
+    }
+
+    function addMsg(id, text, type) {
+      const c = document.getElementById(id);
+      if (!c) return;
+      const d = document.createElement('div');
+      d.className = `msg ${type}`;
+      d.textContent = text;
+      c.appendChild(d);
+      c.scrollTop = c.scrollHeight;
+    }
+
+    // ═══════════════════════════════════════════════
+    //  HISTORY FILTER
+    // ═══════════════════════════════════════════════
+    function filterHist(type, btn) {
+      document.querySelectorAll('.hf-btn').forEach(b => b.classList.remove('act'));
+      btn.classList.add('act');
+      document.querySelectorAll('.hist-row').forEach(r => {
+        r.style.display = (type === 'all' || r.classList.contains(type)) ? '' : 'none';
+      });
+    }
+
+    // ═══════════════════════════════════════════════
+    //  EXPORT — Real Download Functions
+    // ═══════════════════════════════════════════════
+    const EXPORT_DATA = {
+      Banking: {
+        headers: ['Name','Ref','Amount (₹)','Income (₹/mo)','Credit Score','Employment','Decision','Confidence'],
+        rows: [
+          ['Ravi Kumar','#LN-2041','3,50,000','45,000','740','4+ years','APPROVED','94%'],
+          ['James Wilson','#LN-2042','5,00,000','28,000','580','2 years','REJECTED','91%'],
+          ['Priya Mehta','#LN-2043','2,00,000','26,000','625','2 years','FLAGGED','68%'],
+          ['Sunita Rao','#LN-2044','1,50,000','32,000','690','3 years','APPROVED','89%'],
+        ]
+      },
+      HR: {
+        headers: ['Candidate','Role','Score (%)','Experience (yrs)','Skills','Communication','Decision','Ref'],
+        rows: [
+          ['Priya Sharma','Data Analyst','94','3','Python, SQL, Tableau','92/100','SELECTED – Rank 1','#TCS-2041'],
+          ['Rahul Verma','Data Analyst','87','2.5','Python, SQL','85/100','SELECTED – Rank 2','#TCS-2042'],
+          ['Sneha Iyer','Data Analyst','81','2','Python, R','80/100','SELECTED – Rank 3','#TCS-2043'],
+          ['Arjun Das','Data Analyst','62','1','Python','70/100','NOT SELECTED','#TCS-2044'],
+        ]
+      },
+      Healthcare: {
+        headers: ['Patient','Age','SpO2 (%)','BP','Temp (°C)','Heart Rate','Severity','Assigned Doctor'],
+        rows: [
+          ['Ramesh Kumar','58','86','160/100','37.2','98 bpm','CRITICAL','Dr. Rajesh Arora (Cardiology)'],
+          ['Meera Patel','42','97','125/82','38.9','108 bpm','RISK','Dr. Suresh Iyer (General)'],
+          ['Arun Sharma','67','95','145/90','37.0','88 bpm','RISK','Dr. Anjali Mehta (Endocrinology)'],
+          ['Sunita Devi','34','98','118/78','37.1','76 bpm','NORMAL','Dr. V. Nair (General)'],
+          ['Kartik Joshi','72','88','130/85','37.5','125 bpm','EMERGENCY','Dr. Priya Nair (ICU)'],
+          ['Deepa Krishnan','28','99','115/75','36.8','72 bpm','NORMAL','Dr. V. Nair (General)'],
+        ]
+      },
+      History: {
+        headers: ['Date & Time','Module','Dataset','Total','Approved','Rejected','Flagged','Fairness Score'],
+        rows: [
+          ['Apr 26, 2025 · 14:22','Banking','sbi_loans_apr26.csv','248','192 (77%)','56 (23%)','4','94'],
+          ['Apr 26, 2025 · 11:05','HR','tcs_candidates_apr26.csv','12','3 Selected','9 Rejected','1','88'],
+          ['Apr 25, 2025 · 16:40','Healthcare','apollo_patients_apr25.csv','18','12 Normal','3 Critical','3 Risk','96'],
+          ['Apr 24, 2025 · 09:18','Banking','sbi_loans_apr24.csv','302','240 (79%)','62 (21%)','6','91'],
+          ['Apr 23, 2025 · 13:55','HR','tcs_hiring_apr23.csv','28','8 Selected','20 Rejected','0','82'],
+          ['Apr 22, 2025 · 08:30','Healthcare','apollo_patients_apr22.csv','24','16 Normal','5 Critical','3 Risk','94'],
+        ]
+      },
+      BiasReport: {
+        headers: ['Bias Metric','Before EquiMind (%)','After EquiMind (%)','Reduction (%)'],
+        rows: [
+          ['Gender Bias','34','4','88'],
+          ['Age Group Bias','28','5','82'],
+          ['Income Bracket Bias','22','3','86'],
+          ['Geographic Bias','18','2','89'],
+          ['Racial / Ethnic Bias','41','5','88'],
+          ['Overall Fairness Score','—','92 / 100','87'],
+        ]
+      }
+    };
+
+    function exportExcel(module) {
+      showToast('📊', 'Downloading Excel file...', 'info');
+      const data = EXPORT_DATA[module] || EXPORT_DATA['History'];
+      const { headers, rows } = data;
+      const escape = v => `"${String(v).replace(/"/g, '""')}"`;
+      const csv = [headers.map(escape).join(','), ...rows.map(r => r.map(escape).join(','))].join('\r\n');
+      const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `EquiMind_${module}_${new Date().toISOString().slice(0,10)}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setTimeout(() => showToast('✅', `${module} report downloaded as Excel/CSV!`, 'ok'), 800);
+    }
+
+    function exportPDF(module) {
+      showToast('📄', 'Generating PDF report...', 'info');
+      const data = EXPORT_DATA[module] || EXPORT_DATA['History'];
+      const { headers, rows } = data;
+      const now = new Date().toLocaleString('en-IN');
+      const org = APP.user?.org || 'EquiMind AI';
+      const user = APP.user?.name || 'Admin';
+      const thCells = headers.map(h => `<th>${h}</th>`).join('');
+      const trRows = rows.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join('')}</tr>`).join('');
+      const html = `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>EquiMind AI – ${module} Report</title>
+      <style>@page{size:A4 landscape;margin:15mm}*{box-sizing:border-box;margin:0;padding:0}body{font-family:'Segoe UI',Arial,sans-serif;font-size:11px;color:#0b0f1a}.header{display:flex;justify-content:space-between;align-items:center;padding-bottom:12px;border-bottom:2px solid #1a6b4a;margin-bottom:16px}.logo{font-size:18px;font-weight:800}.logo span{color:#1a6b4a}.meta{font-size:10px;color:#7a7e8a;text-align:right}.title{font-size:15px;font-weight:700;margin-bottom:14px}table{width:100%;border-collapse:collapse}th{background:#0b0f1a;color:#f3f1ec;padding:7px 10px;font-size:10px;text-align:left;text-transform:uppercase}td{padding:7px 10px;border-bottom:1px solid #e5e3de;font-size:10.5px}tr:nth-child(even) td{background:#f9f8f5}.footer{margin-top:16px;font-size:9px;color:#7a7e8a;text-align:center;border-top:1px solid #e5e3de;padding-top:8px}.badge{display:inline-block;background:rgba(26,107,74,.12);color:#1a6b4a;padding:2px 8px;border-radius:100px;font-size:9px;font-weight:700;margin-bottom:12px}</style>
+      </head><body><div class="header"><div class="logo">Equi<span>Mind</span> AI</div><div class="meta"><div><strong>Organisation:</strong> ${org}</div><div><strong>Generated by:</strong> ${user}</div><div><strong>Date:</strong> ${now}</div></div></div>
+      <div class="badge">📊 ${module} Module Report</div><div class="title">${module} — AI Decision Report</div>
+      <table><thead><tr>${thCells}</tr></thead><tbody>${trRows}</tbody></table>
+      <div class="footer">EquiMind AI · Fairness-First AI Platform · Confidential · Generated ${now}</div></body></html>`;
+      const win = window.open('', '_blank', 'width=900,height=650');
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      setTimeout(() => { win.print(); setTimeout(() => win.close(), 500); }, 600);
+      setTimeout(() => showToast('✅', `${module} PDF opened — use Ctrl+P / Save as PDF!`, 'ok'), 1000);
+    }
+  
+    // WhatsApp Modal Functions
+    const WA_MESSAGES = {
+      approved: { name: 'Ravi Kumar', phone: '+91 98765 43210', avatar: 'u{1F9D1}', message: 'Hi Ravi Kumar! Your SBI loan of Rs3,50,000 has been APPROVED! Score: 94%. Our manager will call in 24hrs. Ref: #LN-2041 u2014 SBI Bank', deliveryStatus: 'Delivered and Read' },
+      rejected: { name: 'James Wilson', phone: '+91 87654 32109', avatar: 'u{1F464}', message: 'Dear James Wilson, your SBI loan (Rs5L) was not approved. Reason: Credit score 580 (min 650). Clear default and reapply in 6 months. support@sbi.in u2014 SBI Bank', deliveryStatus: 'Delivered' },
+      flagged: { name: 'Priya Mehta', phone: '+91 76543 21098', avatar: 'u{1F469}', message: 'Dear Priya Mehta, your SBI loan is under additional review. Team will contact you within 48 hours. Ref: #LN-2043 u2014 SBI Bank', deliveryStatus: 'Delivered' },
+      hr_selected: { name: 'Priya Sharma', phone: '+91 99887 76655', avatar: 'u{1F469}u200Du{1F4BC}', message: 'Congratulations Priya Sharma! SELECTED for Data Analyst at TCS. HR will contact in 2 working days. Ref: #TCS-2041 u2014 TCS HR', deliveryStatus: 'Delivered and Read' },
+      hr_rejected: { name: 'Arjun Das', phone: '+91 88776 65544', avatar: 'u{1F468}', message: 'Dear Arjun Das, TCS application not shortlisted. Gaps: SQL skills, experience. Improvement tips emailed. Keep growing! u2014 TCS HR', deliveryStatus: 'Delivered' },
+      health_critical: { name: 'Ramesh Kumar Family', phone: '+91 77665 54433', avatar: 'u{1F3E5}', message: 'URGENT - Apollo Hospital. Patient Ramesh Kumar is CRITICAL. SpO2 86%, BP 160/100. Dr. Rajesh Arora (Cardiologist), Room 304. Please come immediately. Tel: 044-2222-3333', deliveryStatus: 'Delivered and Read' }
+    };
+    function showWhatsApp(type) {
+      var data = WA_MESSAGES[type] || WA_MESSAGES['approved'];
+      var now = new Date();
+      var t = now.getHours().toString().padStart(2,'0') + ':' + now.getMinutes().toString().padStart(2,'0');
+      var d = now.toLocaleDateString('en-IN', {weekday:'long',day:'numeric',month:'short',year:'numeric'});
+      document.getElementById('wa-name').textContent = data.name;
+      document.getElementById('wa-phone-num').textContent = data.phone;
+      document.getElementById('wa-av').textContent = data.avatar;
+      document.getElementById('wa-date').textContent = d;
+      document.getElementById('wa-msg-time').textContent = t;
+      document.getElementById('wa-status-text').textContent = data.deliveryStatus;
+      document.getElementById('wa-msg-text').textContent = data.message;
+      document.getElementById('wa-typing').style.display = 'none';
+      document.getElementById('wa-bubble').style.display = 'none';
+      document.getElementById('wa-delivered').style.display = 'none';
+      document.getElementById('wa-modal').classList.add('open');
+      setTimeout(function(){ document.getElementById('wa-typing').style.display = 'block'; }, 300);
+      setTimeout(function(){ document.getElementById('wa-typing').style.display = 'none'; document.getElementById('wa-bubble').style.display = 'block'; document.getElementById('wa-body').scrollTop = 9999; }, 1800);
+      setTimeout(function(){ document.getElementById('wa-delivered').style.display = 'block'; document.getElementById('wa-body').scrollTop = 9999; }, 2400);
+    }function closeWA() {
+  const modal = document.getElementById('wa-modal');
+  if (modal) {
+    modal.classList.remove('open');
+ } // make sure previous function block is properly closed
+
+const waModal = document.getElementById('wa-modal');
+
+if (waModal) {
+  waModal.addEventListener('click', function (e) {
+    if (e.target === waModal) closeWA();
+  });
+}
